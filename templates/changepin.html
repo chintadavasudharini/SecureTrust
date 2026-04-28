@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Change Pin</title>
+    <link rel="stylesheet" href="{{url_for('static', filename='body.css')}}">
+</head>
+
+<body>
+    <div class="navbar">
+        <div class="left">
+            <a href="{{url_for('home')}}">Home</a>
+        </div>
+        <div class="center">
+            <a href="{{url_for('dashboard',pusername=ausername)}}">Dashboard</a>
+        </div>
+        <div class="right">
+            <a href="{{ url_for('profile', username=ausername) }}">Profile</a>
+        </div>
+    </div>
+    <div class="container">
+        <!-- Flash Messages -->
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-info alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
+        <h1>Change Pin</h1>
+        <form id="pinForm" method="POST">
+            <input type="text" placeholder="Card Number" name="cardno" required>
+            <input type="text" placeholder="Current Pin" name="cpin" required>
+            <input type="text" placeholder="New Pin" name="npin" required>
+            <button type="submit" class="btn">Change Pin</button>
+        </form>
+    </div>
+    </div>
+    <div class="footer">
+        <p>&copy; SecureTrust Services. All rights reserved.</p>
+    </div>
+</body>
+
+</html>
