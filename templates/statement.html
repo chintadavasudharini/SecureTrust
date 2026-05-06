@@ -157,8 +157,13 @@
 
             <!-- Search Box -->
             <div class="col-md-3 col-sm-6">
-                <input type="search" class="form-control" id="searchInput" placeholder="Search..."
-                    onkeyup="filterTable()">
+                <div class="input-group">
+                    <input type="search" class="form-control" id="searchInput" placeholder="Search..."
+                        onkeyup="filterTable()">
+                    <span class="input-group-text bg-white" style="cursor: pointer;" onclick="filterTable()">
+                        <i class="bi bi-search"></i>
+                    </span>
+                </div>
             </div>
         </div>
 
@@ -233,7 +238,7 @@
         function filterMini() {
             const rows = document.querySelectorAll("#txnTable tbody tr");
             rows.forEach((row, index) => {
-                row.style.display = index < rows.length - 5 ? "none" : "";
+                row.style.display = index < 5 ? "" : "none";
             });
         }
 

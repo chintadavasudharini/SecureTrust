@@ -123,8 +123,12 @@
             </div>
 
             <!-- Search Box -->
-            <input type="search" class="form-control" id="searchInput" placeholder="Search..." onkeyup="filterTable()"
-                style="max-width: 200px;">
+            <div class="input-group" style="max-width: 240px; margin-bottom: 0.5rem;">
+                <input type="search" class="form-control" id="searchInput" placeholder="Search..." onkeyup="filterTable()">
+                <span class="input-group-text bg-white" style="cursor: pointer;" onclick="filterTable()">
+                    <i class="bi bi-search"></i>
+                </span>
+            </div>
 
             <!-- Save PDF -->
             <button class="btn btn-danger" onclick="savePDF()">
@@ -189,7 +193,7 @@
 
         function filterMini() {
             const rows = document.querySelectorAll("#txnTable tbody tr");
-            rows.forEach((row, idx) => row.style.display = (idx >= rows.length - 5) ? "" : "none");
+            rows.forEach((row, idx) => row.style.display = idx < 5 ? "" : "none");
         }
 
         function savePDF() {
