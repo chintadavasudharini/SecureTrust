@@ -2,228 +2,275 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <title>User Statement | Admin | SecureTrust</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f8f9fa;
-        }
+  <meta charset="UTF-8">
+  <title>User Audit | SecureTrust Admin</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
 
-        .navbar {
-            background-color: white;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-        }
+  <!-- PDF Libraries -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
 
-        .navbar a {
-            color: #007bff;
-            font-weight: bold;
-        }
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #eef4ff, #f8fbff);
+      min-height: 100vh;
+    }
 
-        .container {
-            margin-top: 40px;
-            max-width: 1000px;
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-        }
+    /* ================= NAVBAR ================= */
 
-        h2 {
-            text-align: center;
-            margin-bottom: 30px;
-            font-weight: bold;
-        }
+    .navbar {
+      background: white;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+      padding: 12px 0;
+    }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
+    .navbar-brand {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #007bff !important;
+    }
 
-        th,
-        td {
-            padding: 12px;
-            text-align: center;
-            border-bottom: 1px solid #dee2e6;
-        }
+    .nav-link {
+      color: #007bff !important;
+      font-weight: 600;
+    }
 
-        th {
-            background-color: #007bff;
-            color: white;
-        }
-    </style>
+    /* ================= CONTAINER ================= */
+
+    .main-container {
+      margin: 50px auto;
+      max-width: 1100px;
+      background: white;
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+      animation: fadeUp 0.6s ease;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    h2 {
+      margin-bottom: 35px;
+      font-weight: bold;
+      color: #333;
+    }
+
+    /* ================= CONTROL PANEL ================= */
+
+    .control-panel {
+        background: #f8fbff;
+        padding: 25px;
+        border-radius: 15px;
+        margin-bottom: 30px;
+    }
+
+    .btn {
+        border-radius: 10px;
+        font-weight: 600;
+        padding: 10px 18px;
+    }
+
+    /* ================= TABLE ================= */
+
+    .table-responsive {
+        border-radius: 15px;
+        overflow: hidden;
+        border: 1px solid #eee;
+    }
+
+    th {
+        background: #007bff !important;
+        color: white !important;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 13px;
+        letter-spacing: 0.5px;
+        padding: 15px !important;
+    }
+
+    td {
+        padding: 15px !important;
+        vertical-align: middle;
+        color: #444;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+    .badge-type {
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: bold;
+    }
+
+    .type-deposit { background: #e6fcf5; color: #0ca678; }
+    .type-withdraw { background: #fff5f5; color: #fa5252; }
+    .type-transfer { background: #e7f5ff; color: #228be6; }
+
+    /* ================= FOOTER ================= */
+
+    .footer {
+      text-align: center;
+      padding: 30px;
+      color: #666;
+      font-size: 14px;
+    }
+  </style>
 </head>
 
 <body>
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg px-4 py-2 shadow-sm">
-        <div class="container-fluid">
-            <a class="navbar-brand fw-bold text-primary">SecureTrust</a>
 
-            <div class="ms-auto d-flex align-items-center gap-3">
-                <a class="nav-link fw-semibold" href="{{ url_for('admin_dashboard') }}">Dashboard</a>
-                <div class="dropdown">
-                    <button class="btn btn-outline-primary dropdown-toggle fw-bold" type="button"
-                        data-bs-toggle="dropdown">
-                        Admin
-                    </button>
-                    <ul class="dropdown-menu dropdown-menu-end shadow-sm">
-                        <li class="px-3 py-2">
-                            <div class="fw-semibold">{{ admin }}</div>
-                        </li>
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
-                        <li><a class="dropdown-item" href="{{ url_for('admin_profile', admin=admin) }}"><i
-                                    class="bi bi-person me-2"></i>View Profile</a></li>
-                        <li><a class="dropdown-item" href="{{ url_for('admin_settings', admin=admin) }}"><i
-                                    class="bi bi-gear me-2"></i>Settings</a></li>
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
-                        <li><a class="dropdown-item text-danger" href="{{ url_for('logout') }}"><i
-                                    class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </nav>
+  <!-- ================= NAVBAR ================= -->
 
-    <div class="container">
-        <h2><i class="bi bi-person-lines-fill me-2"></i>User Transaction Statement</h2>
+  <nav class="navbar navbar-expand-lg">
+    <div class="container-fluid px-4">
+      <a class="navbar-brand">
+        <i class="bi bi-shield-lock-fill me-2"></i>
+        SecureTrust Admin
+      </a>
 
-        <div class="d-flex flex-wrap gap-3 justify-content-center mb-3">
-            <!-- Mini Statement -->
-            <button class="btn btn-outline-success" onclick="filterMini()">Mini Statement</button>
-
-            <!-- Custom Filter Dropdown -->
-            <div class="dropdown">
-                <button class="btn btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown">
-                    Custom Filter
-                </button>
-                <div class="dropdown-menu p-3">
-                    <button class="dropdown-item" onclick="quickFilter('today')">Today</button>
-                    <button class="dropdown-item" onclick="quickFilter('week')">This Week</button>
-                    <button class="dropdown-item" onclick="quickFilter('month')">This Month</button>
-                    <hr>
-                    <label for="fromDate" class="form-label">From</label>
-                    <input type="date" id="fromDate" class="form-control mb-2">
-                    <label for="toDate" class="form-label">To</label>
-                    <input type="date" id="toDate" class="form-control mb-2">
-                    <button class="btn btn-sm btn-primary w-100" onclick="filterCustom()">Apply</button>
-                </div>
-            </div>
-
-            <!-- Search Box -->
-            <div class="input-group" style="max-width: 240px; margin-bottom: 0.5rem;">
-                <input type="search" class="form-control" id="searchInput" placeholder="Search..." onkeyup="filterTable()">
-                <span class="input-group-text bg-white" style="cursor: pointer;" onclick="filterTable()">
-                    <i class="bi bi-search"></i>
-                </span>
-            </div>
-
-            <!-- Save PDF -->
-            <button class="btn btn-danger" onclick="savePDF()">
-                <i class="bi bi-file-earmark-pdf me-1"></i> Save PDF
-            </button>
-        </div>
-
-
-
-
-
-        <table id="txnTable">
-            <thead>
-                <tr>
-                    <th>Date & Time</th>
-                    <th>Type</th>
-                    <th>Amount (₹)</th>
-                    <th>Balance</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for txn in user_transactions %}
-                <tr>
-                    <td>{{ txn.time }}</td>
-                    <td>{{ txn.type }}</td>
-                    <td>₹{{ txn.amount }}</td>
-                    <td>₹{{ txn.balance }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-
-        {% if not user_transactions %}
-        <p class="text-center text-muted mt-3">No transactions found.</p>
-        {% endif %}
+      <div class="ms-auto d-flex align-items-center gap-3">
+        <a class="nav-link" href="{{ url_for('admin_dashboard') }}">
+          <i class="bi bi-speedometer2 me-1"></i>
+          Dashboard
+        </a>
+        <a class="nav-link" href="{{ url_for('admin_view_users') }}">
+          <i class="bi bi-people me-1"></i>
+          Users
+        </a>
+      </div>
     </div>
+  </nav>
 
-    <script>
-        function filterTable() {
-            const input = document.getElementById("searchInput").value.toLowerCase();
-            const rows = document.querySelectorAll("#txnTable tbody tr");
-            rows.forEach(row => {
-                const cells = row.querySelectorAll("td");
-                let match = false;
-                cells.forEach(cell => {
-                    if (cell.textContent.toLowerCase().includes(input)) match = true;
-                });
-                row.style.display = match ? "" : "none";
-            });
-        }
+  <!-- ================= MAIN CONTENT ================= -->
 
-        function quickFilter(option) {
-            alert(`Quick Filter (${option}) – Apply filter logic on server-side.`);
-        }
+  <div class="container main-container">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+          <div>
+              <h2>Transaction Audit</h2>
+              <p class="text-muted mb-0">Reviewing ledger for <strong>{{ username }}</strong></p>
+          </div>
+          <div class="text-end">
+              <button class="btn btn-danger" onclick="savePDF()">
+                  <i class="bi bi-file-earmark-pdf-fill me-2"></i> Export Audit
+              </button>
+          </div>
+      </div>
 
-        function filterCustom() {
-            const from = document.getElementById("fromDate").value;
-            const to = document.getElementById("toDate").value;
-            if (!from || !to) return alert("Please select both From and To dates.");
-            alert(`Filter by date: ${from} to ${to}`);
-        }
+      <!-- Control Panel -->
+      <div class="control-panel">
+          <div class="row g-3">
+              <div class="col-md-4">
+                  <div class="input-group">
+                      <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-search"></i></span>
+                      <input type="search" class="form-control border-start-0" id="searchInput" placeholder="Search entries..." onkeyup="filterTable()">
+                  </div>
+              </div>
+              <div class="col-md-8 text-end">
+                  <button class="btn btn-outline-primary me-2" onclick="filterMini()">Mini Statement</button>
+                  <button class="btn btn-outline-secondary" onclick="location.reload()">Reset View</button>
+              </div>
+          </div>
+      </div>
 
-        function filterMini() {
-            const rows = document.querySelectorAll("#txnTable tbody tr");
-            rows.forEach((row, idx) => row.style.display = idx < 5 ? "" : "none");
-        }
+      <div class="table-responsive">
+          <table class="table" id="txnTable">
+              <thead>
+                  <tr>
+                      <th>Timestamp</th>
+                      <th>Transaction Type</th>
+                      <th class="text-end">Amount</th>
+                      <th class="text-end">Post-Balance</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  {% for txn in transactions %}
+                  <tr>
+                      <td class="text-muted fw-semibold">{{ txn.time }}</td>
+                      <td>
+                          <span class="badge-type {% if 'Deposit' in txn.type %}type-deposit{% elif 'Withdraw' in txn.type %}type-withdraw{% else %}type-transfer{% endif %}">
+                              {{ txn.type }}
+                          </span>
+                      </td>
+                      <td class="text-end fw-bold {% if 'Deposit' in txn.type or 'Received' in txn.type %}text-success{% else %}text-danger{% endif %}">
+                          {% if 'Deposit' in txn.type or 'Received' in txn.type %}+{% else %}-{% endif %} ₹{{ txn.amount }}
+                      </td>
+                      <td class="text-end fw-bold">₹{{ txn.balance }}</td>
+                  </tr>
+                  {% else %}
+                  <tr>
+                      <td colspan="4" class="text-center py-5 text-muted">No transaction records found for this user.</td>
+                  </tr>
+                  {% endfor %}
+              </tbody>
+          </table>
+      </div>
+  </div>
 
-        function savePDF() {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-            const data = [];
+  <!-- ================= FOOTER ================= -->
 
-            const rows = document.querySelectorAll("#txnTable tbody tr");
-            rows.forEach(row => {
-                const cells = row.querySelectorAll("td");
-                if (cells.length === 4) {
-                    const date = cells[0].innerText;
-                    const type = cells[1].innerText;
-                    const amt = cells[2].innerText.replace("₹", "");
-                    const bal = cells[3].innerText.replace("₹", "");
-                    data.push([date, type, amt, bal]);
-                }
-            });
+  <div class="footer">
+    <p>© 2026 SecureTrust Admin Portal • Audit Log Interface</p>
+  </div>
 
-            doc.autoTable({
-                head: [["Date & Time", "Type", "Amount (₹)", "Balance (₹)"]],
-                body: data,
-                margin: { top: 20 },
-                headStyles: { fillColor: [0, 102, 204] },
-            });
+  <script>
+    function filterTable() {
+        const input = document.getElementById("searchInput").value.toLowerCase();
+        const rows = document.querySelectorAll("#txnTable tbody tr");
+        rows.forEach(row => {
+            const text = row.innerText.toLowerCase();
+            row.style.display = text.includes(input) ? "" : "none";
+        });
+    }
 
-            doc.save("User_Transaction_Statement.pdf");
-        }
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    function filterMini() {
+        const rows = document.querySelectorAll("#txnTable tbody tr");
+        rows.forEach((row, idx) => row.style.display = idx < 5 ? "" : "none");
+    }
+
+    function savePDF() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        
+        doc.setFontSize(20);
+        doc.setTextColor(0, 123, 255);
+        doc.text("SecureTrust Audit Report", 14, 20);
+        
+        doc.setFontSize(10);
+        doc.setTextColor(100);
+        doc.text(`User: {{ username }} | Generated by: {{ admin }}`, 14, 30);
+
+        const data = [];
+        const rows = document.querySelectorAll("#txnTable tbody tr");
+        rows.forEach(row => {
+            const cells = row.querySelectorAll("td");
+            if (cells.length === 4) {
+                data.push([cells[0].innerText, cells[1].innerText, cells[2].innerText, cells[3].innerText]);
+            }
+        });
+
+        doc.autoTable({
+            startY: 40,
+            head: [["Timestamp", "Type", "Amount", "Balance"]],
+            body: data,
+            headStyles: { fillColor: [0, 123, 255] },
+            alternateRowStyles: { fillColor: [248, 251, 255] }
+        });
+
+        doc.save(`Audit_{{ username }}.pdf`);
+    }
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 
 </html>

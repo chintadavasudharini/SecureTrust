@@ -2,49 +2,229 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Change Pin</title>
-    <link rel="stylesheet" href="{{url_for('static', filename='body.css')}}">
+  <meta charset="UTF-8">
+  <title>Change PIN | SecureTrust</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #eef4ff, #f8fbff);
+      min-height: 100vh;
+    }
+
+    /* ================= NAVBAR ================= */
+
+    .navbar {
+      background: white;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+      padding: 12px 0;
+    }
+
+    .navbar-brand {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #007bff !important;
+    }
+
+    .nav-link {
+      color: #007bff !important;
+      font-weight: 600;
+    }
+
+    .profile-btn {
+      border-radius: 30px;
+      font-weight: 600;
+      padding: 8px 20px;
+    }
+
+    /* ================= FORM CONTAINER ================= */
+
+    .form-wrapper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 80vh;
+      padding: 20px;
+    }
+
+    .form-container {
+      background: white;
+      width: 100%;
+      max-width: 450px;
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+      border-top: 6px solid #007bff;
+      animation: fadeUp 0.6s ease;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(40px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .form-container h3 {
+      margin-bottom: 25px;
+      font-weight: bold;
+      color: #333;
+      text-align: center;
+    }
+
+    .form-control {
+      height: 50px;
+      border-radius: 10px;
+      margin-bottom: 15px;
+    }
+
+    .form-control:focus {
+      box-shadow: none;
+      border-color: #007bff;
+    }
+
+    /* ================= BUTTONS ================= */
+
+    .btn-submit {
+      width: 100%;
+      height: 50px;
+      border-radius: 10px;
+      font-weight: bold;
+      font-size: 16px;
+      transition: 0.3s;
+      margin-top: 10px;
+    }
+
+    .btn-submit:hover {
+      transform: scale(1.02);
+      box-shadow: 0 5px 15px rgba(0, 123, 255, 0.3);
+    }
+
+    /* ================= FOOTER ================= */
+
+    .footer {
+      text-align: center;
+      padding: 20px;
+      color: #666;
+      font-size: 14px;
+    }
+
+    /* Remove spin buttons */
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    input[type="number"] {
+      -moz-appearance: textfield;
+    }
+  </style>
 </head>
 
 <body>
-    <div class="navbar">
-        <div class="left">
-            <a href="{{url_for('home')}}">Home</a>
-        </div>
-        <div class="center">
-            <a href="{{url_for('dashboard',pusername=ausername)}}">Dashboard</a>
-        </div>
-        <div class="right">
-            <a href="{{ url_for('profile', username=ausername) }}">Profile</a>
-        </div>
-    </div>
-    <div class="container">
-        <!-- Flash Messages -->
-{% with messages = get_flashed_messages() %}
-  {% if messages %}
-    {% for message in messages %}
-      <div class="alert alert-info alert-dismissible fade show text-center mt-3 mx-auto w-75" role="alert">
-        {{ message }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-      </div>
-    {% endfor %}
-  {% endif %}
-{% endwith %}
 
-        <h1>Change Pin</h1>
-        <form id="pinForm" method="POST">
-            <input type="text" placeholder="Card Number" name="cardno" required>
-            <input type="text" placeholder="Current Pin" name="cpin" required>
-            <input type="text" placeholder="New Pin" name="npin" required>
-            <button type="submit" class="btn">Change Pin</button>
-        </form>
+  <!-- ================= NAVBAR ================= -->
+
+  <nav class="navbar navbar-expand-lg">
+    <div class="container-fluid px-4">
+      <a class="navbar-brand">
+        <i class="bi bi-bank"></i>
+        SecureTrust
+      </a>
+
+      <div class="ms-auto d-flex align-items-center gap-3">
+        <a class="nav-link" href="{{ url_for('dashboard', pusername=ausername) }}">
+          <i class="bi bi-grid-fill me-1"></i>
+          Dashboard
+        </a>
+
+        <!-- Profile Dropdown -->
+        <div class="dropdown">
+          <button class="btn btn-outline-primary dropdown-toggle profile-btn" type="button" id="profileDropdown"
+            data-bs-toggle="dropdown">
+            <i class="bi bi-person-circle"></i>
+            {{ ausername }}
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end shadow border-0">
+            <li class="px-3 py-2">
+              <div class="fw-bold">{{ ausername }}</div>
+              <small class="text-muted">Secure Banking User</small>
+            </li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="{{ url_for('profile', username=ausername) }}"><i
+                  class="bi bi-person me-2"></i>View Profile</a></li>
+            <li><a class="dropdown-item" href="{{ url_for('pinchange', username=ausername) }}"><i
+                  class="bi bi-gear me-2"></i>Settings</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item text-danger" href="{{ url_for('logout') }}"><i
+                  class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
+          </ul>
+        </div>
+      </div>
     </div>
+  </nav>
+
+  <!-- Flash Messages -->
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert alert-info alert-dismissible fade show text-center mt-3 mx-auto w-75" role="alert">
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  <!-- ================= PIN CHANGE SECTION ================= -->
+
+  <div class="form-wrapper">
+    <div class="form-container">
+      <h3>
+        <i class="bi bi-shield-lock-fill me-2 text-primary"></i>
+        Change Security PIN
+      </h3>
+      <p class="text-muted text-center mb-4">Update your 4-digit ATM PIN securely</p>
+      
+      <form method="POST">
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Card Number</label>
+          <input type="text" class="form-control" name="cardno" placeholder="Enter your card number" required>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Current PIN</label>
+          <input type="password" class="form-control" name="cpin" placeholder="Enter current PIN" required maxlength="4">
+        </div>
+
+        <div class="mb-4">
+          <label class="form-label fw-semibold">New Security PIN</label>
+          <input type="password" class="form-control" name="newpin" placeholder="Enter new 4-digit PIN" required maxlength="4">
+          <small class="text-muted">Avoid using sequential numbers like 1234.</small>
+        </div>
+        
+        <button type="submit" class="btn btn-primary btn-submit">
+          <i class="bi bi-check-circle me-2"></i>
+          Update PIN Now
+        </button>
+      </form>
     </div>
-    <div class="footer">
-        <p>&copy; SecureTrust Services. All rights reserved.</p>
-    </div>
+  </div>
+
+  <!-- ================= FOOTER ================= -->
+
+  <div class="footer">
+    <p>© 2026 SecureTrust Services. All Rights Reserved.</p>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 
-</html>
+</html>

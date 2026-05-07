@@ -5,227 +5,272 @@
   <meta charset="UTF-8">
   <title>Admin Dashboard | SecureTrust</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Bootstrap -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Bootstrap Icons -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background-color: #e3e3e3;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #eef4ff, #f8fbff);
+      min-height: 100vh;
     }
+
+    /* ================= NAVBAR ================= */
 
     .navbar {
-      background-color: white;
+      background: white;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+      padding: 12px 0;
     }
 
-    .navbar a {
-      color: #007bff;
+    .navbar-brand {
+      font-size: 1.5rem;
       font-weight: bold;
+      color: #007bff !important;
     }
 
-    .header {
-      padding: 40px 0 10px;
+    .nav-link {
+      color: #007bff !important;
+      font-weight: 600;
+    }
+
+    .admin-btn {
+      border-radius: 30px;
+      font-weight: 600;
+      padding: 8px 20px;
+    }
+
+    /* ================= HEADER ================= */
+
+    .welcome-banner {
+        background: #007bff;
+        color: white;
+        padding: 40px 0;
+        margin-bottom: 40px;
+        border-radius: 0 0 50px 50px;
+        box-shadow: 0 10px 30px rgba(0, 123, 255, 0.2);
+    }
+
+    /* ================= STATS ================= */
+
+    .stat-card {
+        background: white;
+        border-radius: 20px;
+        padding: 25px;
+        border: none;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        transition: 0.3s;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+
+    .stat-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 28px;
+    }
+
+    .bg-soft-primary { background: #e7f5ff; color: #007bff; }
+    .bg-soft-success { background: #e6fcf5; color: #0ca678; }
+    .bg-soft-warning { background: #fff9db; color: #f08c00; }
+
+    /* ================= ACTION CARDS ================= */
+
+    .action-card {
+      background: white;
+      border-radius: 20px;
+      padding: 35px;
       text-align: center;
+      transition: 0.3s;
+      border: 1px solid #f0f0f0;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      animation: fadeUp 0.6s ease;
     }
 
-    .header h2 {
-      font-weight: 700;
-      color: #333;
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
-    .card {
-      background-color: white;
-      border: none;
-      border-radius: 10px;
-      transition: transform 0.3s, box-shadow 0.3s;
-      animation: slideUp 0.5s ease forwards;
-      opacity: 0;
+    .action-card:hover {
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+      border-color: #007bff;
     }
 
-    .card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-    }
-
-    .card-icon {
-      font-size: 3rem;
+    .action-icon {
+      font-size: 45px;
       color: #007bff;
-      margin-bottom: 15px;
+      margin-bottom: 20px;
     }
 
-    .btn {
-      border-radius: 5px;
-      font-weight: 500;
+    .btn-action {
+        border-radius: 10px;
+        font-weight: bold;
+        padding: 10px 20px;
+        margin-top: auto;
     }
 
-    @keyframes slideUp {
-      0% {
-        transform: translateY(50px);
-        opacity: 0;
-      }
-
-      100% {
-        transform: translateY(0);
-        opacity: 1;
-      }
-    }
+    /* ================= FOOTER ================= */
 
     .footer {
-      margin-top: 35px;
-      font-size: 14px;
-      color: #666;
       text-align: center;
+      padding: 30px;
+      color: #666;
+      font-size: 14px;
     }
   </style>
 </head>
 
 <body>
 
-  <!-- Navbar -->
-  <nav class="navbar navbar-expand-lg px-4 py-2 shadow-sm bg-white">
-    <div class="container-fluid">
-      <a class="navbar-brand fw-bold text-primary">SecureTrust Admin</a>
+  <!-- ================= NAVBAR ================= -->
 
+  <nav class="navbar navbar-expand-lg">
+    <div class="container-fluid px-4">
+      <a class="navbar-brand">
+        <i class="bi bi-shield-lock-fill me-2"></i>
+        SecureTrust Admin
+      </a>
 
-      <div class="dropdown">
-        <button class="btn btn-outline-primary dropdown-toggle fw-bold" type="button" data-bs-toggle="dropdown">
-          Admin
-        </button>
-        <ul class="dropdown-menu dropdown-menu-end shadow-sm">
-          <li class="px-3 py-2">
-            <div class="fw-semibold">{{ admin }}</div>
-          </li>
-          <li>
-            <hr class="dropdown-divider">
-          </li>
-          <li><a class="dropdown-item" href="{{ url_for('admin_profile', admin=admin) }}"><i
-                class="bi bi-person me-2"></i>View Profile</a></li>
-          <li><a class="dropdown-item" href="{{ url_for('admin_settings', admin=admin) }}"><i
-                class="bi bi-gear me-2"></i>Settings</a></li>
-          <li>
-            <hr class="dropdown-divider">
-          </li>
-          <li><a class="dropdown-item text-danger" href="{{ url_for('logout') }}"><i
-                class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
-        </ul>
+      <div class="ms-auto">
+        <div class="dropdown">
+          <button class="btn btn-outline-primary dropdown-toggle admin-btn" type="button" data-bs-toggle="dropdown">
+            <i class="bi bi-person-circle me-1"></i>
+            {{ admin }}
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end shadow border-0">
+            <li class="px-3 py-2">
+              <div class="fw-bold">{{ admin }}</div>
+              <small class="text-muted">System Administrator</small>
+            </li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="{{ url_for('admin_dashboard') }}"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item text-danger" href="{{ url_for('logout') }}"><i class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
+          </ul>
+        </div>
       </div>
-
-
     </div>
   </nav>
 
-  <!-- Header -->
-  <div class="header">
-    <h2>Welcome, {{ admin }}!</h2>
-    <p class="text-muted">Manage users and system operations</p>
+  <!-- ================= WELCOME BANNER ================= -->
+
+  <div class="welcome-banner text-center">
+      <div class="container">
+          <h1 class="display-5 fw-bold mb-2">Operational Command Center</h1>
+          <p class="lead opacity-75">Welcome back, {{ admin }}. System status is optimal.</p>
+      </div>
   </div>
 
-  <!-- Summary Stats -->
-  <div class="container my-4">
-    <div class="row text-center">
-      <div class="col-md-4">
-        <div class="bg-white p-4 shadow rounded">
-          <h5>Total Users</h5>
-          <h2 class="text-primary">{{ total_users }}</h2>
-        </div>
+  <!-- ================= STATS SECTION ================= -->
+
+  <div class="container mb-5">
+      <div class="row g-4">
+          <div class="col-lg-4 col-md-6">
+              <div class="stat-card">
+                  <div class="stat-icon bg-soft-primary">
+                      <i class="bi bi-people-fill"></i>
+                  </div>
+                  <div>
+                      <p class="text-muted mb-0">Total Customers</p>
+                      <h3 class="fw-bold mb-0">Active Users</h3>
+                  </div>
+              </div>
+          </div>
+          <div class="col-lg-4 col-md-6">
+              <div class="stat-card">
+                  <div class="stat-icon bg-soft-success">
+                      <i class="bi bi-cash-stack"></i>
+                  </div>
+                  <div>
+                      <p class="text-muted mb-0">Vault Reserves</p>
+                      <h3 class="fw-bold mb-0">Global Liquidity</h3>
+                  </div>
+              </div>
+          </div>
+          <div class="col-lg-4 col-md-12">
+              <div class="stat-card">
+                  <div class="stat-icon bg-soft-warning">
+                      <i class="bi bi-activity"></i>
+                  </div>
+                  <div>
+                      <p class="text-muted mb-0">Network Health</p>
+                      <h3 class="fw-bold mb-0">100% Uptime</h3>
+                  </div>
+              </div>
+          </div>
       </div>
-      <div class="col-md-4">
-        <div class="bg-white p-4 shadow rounded">
-          <h5>Total Balance</h5>
-          <h2 class="text-success">₹ {{ total_balance }}</h2>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="bg-white p-4 shadow rounded">
-          <h5>Total Transactions</h5>
-          <h2 class="text-warning">{{ total_transactions }}</h2>
-        </div>
-      </div>
-    </div>
   </div>
 
-  <!-- Dashboard Cards -->
-  <div class="container mt-4">
-    <div class="row g-4 justify-content-center">
+  <!-- ================= ACTION CARDS SECTION ================= -->
+
+  <div class="container mb-5">
+    <div class="row g-4">
+      
+      <!-- View Users -->
+      <div class="col-lg-4 col-md-6">
+        <div class="action-card" style="animation-delay: 0.1s;">
+          <i class="bi bi-person-lines-fill action-icon"></i>
+          <h4>User Directory</h4>
+          <p class="text-muted">Manage registered customers, view profiles, and monitor balances.</p>
+          <a href="{{ url_for('admin_view_users') }}" class="btn btn-primary btn-action">
+              <i class="bi bi-search me-2"></i>Browse Users
+          </a>
+        </div>
+      </div>
 
       <!-- Add User -->
-      <div class="col-md-4">
-        <div class="card text-center p-4 h-100">
-          <div class="card-body d-flex flex-column">
-            <div class="card-icon"><i class="bi bi-person-plus-fill"></i></div>
-            <h5 class="card-title">Add User</h5>
-            <p class="card-text">Register a new user to the system.</p>
-            <div class="mt-auto">
-              <a href="{{ url_for('register') }}" class="btn btn-success">Add New User</a>
-            </div>
-          </div>
+      <div class="col-lg-4 col-md-6">
+        <div class="action-card" style="animation-delay: 0.2s;">
+          <i class="bi bi-person-plus-fill action-icon text-success"></i>
+          <h4>Enroll New User</h4>
+          <p class="text-muted">Onboard new customers by creating secure banking credentials.</p>
+          <a href="{{ url_for('admin_add_user') }}" class="btn btn-success btn-action">
+              <i class="bi bi-plus-circle me-2"></i>New Registration
+          </a>
         </div>
       </div>
 
-      <!-- View Users -->
-      <div class="col-md-4">
-        <div class="card text-center p-4 h-100">
-          <div class="card-body d-flex flex-column">
-            <div class="card-icon"><i class="bi bi-eye-fill"></i></div>
-            <h5 class="card-title">View Users</h5>
-            <p class="card-text">See all registered users and take actions.</p>
-            <div class="mt-auto">
-              <a href="{{ url_for('admin_view_all', admin=admin) }}" class="btn btn-primary">View All Users</a>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Account Management -->
-      <div class="col-md-4">
-        <div class="card text-center p-4 h-100">
-          <div class="card-body d-flex flex-column">
-            <div class="card-icon"><i class="bi bi-credit-card-2-front-fill"></i></div>
-            <h5 class="card-title">Account Management</h5>
-            <p class="card-text">Modify balances or activate/deactivate accounts.</p>
-            <div class="mt-auto">
-              <a href="{{ url_for('admin_account_mgmt', admin=admin) }}" class="btn btn-warning">Manage Accounts</a>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Transaction Monitoring -->
-      <div class="col-md-4">
-        <div class="card text-center p-4 h-100">
-          <div class="card-body d-flex flex-column">
-            <div class="card-icon text-info"><i class="bi bi-bar-chart-fill"></i></div>
-            <h5 class="card-title">Transaction Monitoring</h5>
-            <p class="card-text">Track, search, and export all transaction history.</p>
-            <div class="mt-auto">
-              <a href="{{ url_for('admin_transactions', admin=admin) }}" class="btn btn-info">View Transactions</a>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Settings -->
-      <div class="col-md-4">
-        <div class="card text-center p-4 h-100">
-          <div class="card-body d-flex flex-column">
-            <div class="card-icon text-secondary"><i class="bi bi-gear-fill"></i></div>
-            <h5 class="card-title">Settings</h5>
-            <p class="card-text">Configure bank name, logo, limits and more.</p>
-            <div class="mt-auto">
-              <a href="{{ url_for('admin_settings', admin=admin) }}" class="btn btn-secondary">System Settings</a>
-            </div>
-          </div>
+      <!-- Transaction Logs -->
+      <div class="col-lg-4 col-md-6">
+        <div class="action-card" style="animation-delay: 0.3s;">
+          <i class="bi bi-receipt-cutoff action-icon text-warning"></i>
+          <h4>Transaction Audit</h4>
+          <p class="text-muted">Review all system-wide fund transfers, deposits, and withdrawals.</p>
+          <a href="{{ url_for('admin_view_users') }}" class="btn btn-warning btn-action">
+              <i class="bi bi-file-earmark-text me-2"></i>Audit Logs
+          </a>
         </div>
       </div>
 
     </div>
   </div>
 
-  <!-- Footer -->
+  <!-- ================= FOOTER ================= -->
+
   <div class="footer">
-    <p>&copy; SecureTrust Admin Panel. All rights reserved.</p>
+    <p>© 2026 SecureTrust Admin Portal • Proprietary & Confidential</p>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 
 </html>

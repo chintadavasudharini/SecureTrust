@@ -5,86 +5,169 @@
     <meta charset="UTF-8">
     <title>Balance | SecureTrust</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+
     <style>
         body {
-            background-color: #e3e3e3;
-            font-family: Arial, sans-serif;
+            background: linear-gradient(to right, #eef4ff, #f8fbff);
+            font-family: 'Segoe UI', sans-serif;
+            min-height: 100vh;
         }
+
+        /* ================= NAVBAR ================= */
 
         .navbar {
-            background-color: white;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            background: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+            padding: 12px 0;
         }
 
-        .navbar a {
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #007bff !important;
+        }
+
+        .nav-link {
+            color: #007bff !important;
+            font-weight: 600;
+        }
+
+        .profile-btn {
+            border-radius: 30px;
+            font-weight: 600;
+            padding: 8px 20px;
+        }
+
+        /* ================= BALANCE CARD ================= */
+
+        .balance-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 80vh;
+            padding: 20px;
+        }
+
+        .balance-card {
+            width: 100%;
+            max-width: 450px;
+
+            background: white;
+
+            padding: 40px 35px;
+
+            border-radius: 20px;
+
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+
+            animation: fadeUp 0.6s ease;
+        }
+
+        @keyframes fadeUp {
+
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ================= BALANCE HEADER ================= */
+
+        .balance-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .balance-header i {
+            font-size: 55px;
             color: #007bff;
+        }
+
+        .balance-header h2 {
+            margin-top: 15px;
+            font-weight: bold;
+            color: #007bff;
+        }
+
+        .balance-header p {
+            color: #666;
+            margin-top: 10px;
+        }
+
+        /* ================= TRANSACTION INFO ================= */
+
+        .info-box {
+            background: #f8fbff;
+            border-radius: 12px;
+            padding: 18px;
+            margin-bottom: 25px;
+        }
+
+        .info-box p {
+            margin-bottom: 12px;
+            color: #555;
+            font-size: 15px;
+        }
+
+        .deposit {
+            color: green;
             font-weight: bold;
         }
 
-        .balance-box {
-            background-color: white;
-            padding: 40px 30px;
-            margin-top: 160px;
-            border-radius: 10px;
-            border-left: 6px solid #007bff;
-            /* Blue left border */
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
-            max-width: 400px;
-            margin-left: auto;
-            margin-right: auto;
-            animation: fadeIn 0.5s ease-in-out forwards;
-            opacity: 0;
+        .withdraw {
+            color: red;
+            font-weight: bold;
         }
 
-        .balance-box h2 {
-            font-weight: 700;
-            color: #007bff;
-            margin-bottom: 20px;
+        /* ================= CURRENT BALANCE ================= */
+
+        .current-balance {
+            text-align: center;
+            margin-top: 20px;
         }
 
-        .balance-box p {
-            font-size: 16px;
+        .current-balance p {
+            color: #666;
             margin-bottom: 10px;
-        }
-
-        .balance-box b {
-            font-size: 18px;
+            text-align: center;
         }
 
         .amount {
+            font-size: 42px;
             font-weight: bold;
-            color: #000;
-            /* black */
-            font-size: 30px;
+            color: #007bff;
         }
 
-        .text-green {
-            color: green;
-        }
-
-        .text-red {
-            color: red;
-        }
-
+        /* ================= FOOTER ================= */
 
         .footer {
             text-align: center;
-            margin-top: 40px;
+            padding: 20px;
+            color: #666;
             font-size: 14px;
-            color: #555;
         }
 
-        @keyframes fadeIn {
-            0% {
-                transform: translateY(40px);
-                opacity: 0;
+        /* ================= RESPONSIVE ================= */
+
+        @media(max-width: 576px) {
+
+            .balance-card {
+                padding: 30px 25px;
             }
 
-            100% {
-                transform: translateY(0);
-                opacity: 1;
+            .amount {
+                font-size: 34px;
             }
         }
     </style>
@@ -92,81 +175,203 @@
 
 <body>
 
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg px-4 py-2 shadow-sm bg-white">
-        <div class="container-fluid">
-            <a class="navbar-brand fw-bold text-primary">SecureTrust</a>
+    <!-- ================= NAVBAR ================= -->
+
+    <nav class="navbar navbar-expand-lg">
+
+        <div class="container-fluid px-4">
+
+            <a class="navbar-brand">
+                <i class="bi bi-bank"></i>
+                SecureTrust
+            </a>
 
             <div class="ms-auto d-flex align-items-center gap-3">
-                <a class="nav-link fw-semibold" href="{{ url_for('dashboard', pusername=ausername) }}">Dashboard</a>
+
+                <a class="nav-link" href="{{ url_for('dashboard', pusername=ausername) }}">
+
+                    <i class="bi bi-grid-fill me-1"></i>
+                    Dashboard
+
+                </a>
 
                 <!-- Profile Dropdown -->
+
                 <div class="dropdown">
-                    <button class="btn btn-outline-primary dropdown-toggle fw-bold" type="button" id="profileDropdown"
-                        data-bs-toggle="dropdown" aria-expanded="false">
-                        Profile
+
+                    <button class="btn btn-outline-primary dropdown-toggle profile-btn" type="button"
+                        id="profileDropdown" data-bs-toggle="dropdown">
+
+                        <i class="bi bi-person-circle"></i>
+                        {{ ausername }}
+
                     </button>
-                    <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="profileDropdown">
+
+                    <ul class="dropdown-menu dropdown-menu-end shadow border-0">
+
                         <li class="px-3 py-2">
-                            <div class="fw-semibold">{{ ausername }}</div>
+
+                            <div class="fw-bold">
+                                {{ ausername }}
+                            </div>
+
+                            <small class="text-muted">
+                                Secure Banking User
+                            </small>
+
                         </li>
+
                         <li>
                             <hr class="dropdown-divider">
                         </li>
-                        <li><a class="dropdown-item" href="{{ url_for('profile', username=ausername) }}"><i
-                                    class="bi bi-person me-2"></i>View Profile</a></li>
-                        <li><a class="dropdown-item" href="{{ url_for('pinchange', username=ausername) }}"><i
-                                    class="bi bi-gear me-2"></i>Settings</a></li>
+
+                        <li>
+
+                            <a class="dropdown-item" href="{{ url_for('profile', username=ausername) }}">
+
+                                <i class="bi bi-person me-2"></i>
+                                View Profile
+
+                            </a>
+
+                        </li>
+
+                        <li>
+
+                            <a class="dropdown-item" href="{{ url_for('pinchange', username=ausername) }}">
+
+                                <i class="bi bi-gear me-2"></i>
+                                Settings
+
+                            </a>
+
+                        </li>
+
                         <li>
                             <hr class="dropdown-divider">
                         </li>
-                        <li><a class="dropdown-item text-danger" href="{{ url_for('logout') }}"><i
-                                    class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
+
+                        <li>
+
+                            <a class="dropdown-item text-danger" href="{{ url_for('logout') }}">
+
+                                <i class="bi bi-box-arrow-right me-2"></i>
+                                Logout
+
+                            </a>
+
+                        </li>
+
                     </ul>
+
                 </div>
+
             </div>
+
         </div>
+
     </nav>
 
     <!-- Flash Messages -->
-{% with messages = get_flashed_messages() %}
-  {% if messages %}
+
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
     {% for message in messages %}
-      <div class="alert alert-info alert-dismissible fade show text-center mt-3 mx-auto w-75" role="alert">
+
+    <div class="alert alert-info alert-dismissible fade show text-center mt-3 mx-auto w-75" role="alert">
+
         {{ message }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-      </div>
+
+        <button type="button" class="btn-close" data-bs-dismiss="alert">
+        </button>
+
+    </div>
+
     {% endfor %}
-  {% endif %}
-{% endwith %}
+    {% endif %}
+    {% endwith %}
 
+    <!-- ================= BALANCE SECTION ================= -->
 
-    <!-- Balance Box -->
-    <div class="balance-box text-center">
-        <h2><i class="bi bi-cash-coin me-2"></i>Account Balance</h2>
-        <p class="text-muted">Your current account details are below:</p>
+    <div class="balance-wrapper">
 
-        {% if prev_balance is defined and action == 'deposit' %}
-        <p>Previous Balance: <span>₹{{ prev_balance }}</span></p>
-        <p class="text-green">Deposited: <b>+₹{{ amount }}</b></p>
+        <div class="balance-card">
 
-        {% elif prev_balance is defined and action == 'withdraw' %}
-        <p>Previous Balance: <span>₹{{ prev_balance }}</span></p>
-        <p class="text-red">Withdrawn: <b>-₹{{ amount }}</b></p>
-        
-        {% endif %}
+            <!-- Header -->
 
-        <p class="mt-4">Current Balance:</p>
-        <h4 class="amount">₹{{ abalance_amount }}</h4>
+            <div class="balance-header">
+
+                <i class="bi bi-wallet2"></i>
+
+                <h2>Account Balance</h2>
+
+                <p>
+                    View your latest banking balance details
+                </p>
+
+            </div>
+
+            <!-- Transaction Info -->
+
+            <div class="info-box">
+
+                {% if prev_balance is defined and action == 'deposit' %}
+
+                <p>
+                    Previous Balance:
+                    <strong>₹{{ prev_balance }}</strong>
+                </p>
+
+                <p class="deposit">
+                    + Deposited ₹{{ amount }}
+                </p>
+
+                {% elif prev_balance is defined and action == 'withdraw' %}
+
+                <p>
+                    Previous Balance:
+                    <strong>₹{{ prev_balance }}</strong>
+                </p>
+
+                <p class="withdraw">
+                    - Withdrawn ₹{{ amount }}
+                </p>
+
+                {% endif %}
+
+            </div>
+
+            <!-- Current Balance -->
+
+            <div class="current-balance">
+
+                <p>Current Available Balance</p>
+
+                <div class="amount">
+                    ₹{{ abalance_amount }}
+                </div>
+
+            </div>
+
+        </div>
+
     </div>
 
+    <!-- ================= FOOTER ================= -->
 
-    <!-- Footer -->
     <div class="footer">
-        <p>&copy; SecureTrust Services. All rights reserved.</p>
+
+        <p>
+            © 2026 SecureTrust Services.
+            All Rights Reserved.
+        </p>
+
     </div>
+
+    <!-- Bootstrap JS -->
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 
 </html>

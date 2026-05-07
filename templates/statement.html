@@ -5,117 +5,184 @@
     <meta charset="UTF-8">
     <title>Transaction History | SecureTrust</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- PDF Libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
 
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f7f7f7;
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(to right, #eef4ff, #f8fbff);
+            min-height: 100vh;
         }
+
+        /* ================= NAVBAR ================= */
 
         .navbar {
-            background-color: white;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        .nav-link.dashboard-link {
-            color: #007bff !important;
-            /* blue */
-            transition: color 0.3s ease;
-        }
-
-        .nav-link.dashboard-link:hover {
-            color: #000 !important;
-            /* black on hover */
-        }
-
-
-        .container {
-            margin-top: 40px;
-            max-width: 1000px;
             background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+            padding: 12px 0;
+        }
+
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #007bff !important;
+        }
+
+        .nav-link {
+            color: #007bff !important;
+            font-weight: 600;
+        }
+
+        .profile-btn {
+            border-radius: 30px;
+            font-weight: 600;
+            padding: 8px 20px;
+        }
+
+        /* ================= CONTAINER ================= */
+
+        .main-container {
+            margin: 50px auto;
+            max-width: 1100px;
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            animation: fadeUp 0.6s ease;
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         h2 {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 35px;
             font-weight: bold;
+            color: #007bff;
         }
 
-        .form-control,
+        /* ================= CONTROLS ================= */
+
+        .control-panel {
+            background: #f8fbff;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+
         .btn {
-            width: 100%;
+            border-radius: 10px;
+            font-weight: 600;
+            padding: 10px 18px;
+            transition: 0.3s;
+        }
+
+        /* ================= TABLE ================= */
+
+        .table-responsive {
+            border-radius: 15px;
+            overflow: hidden;
+            border: 1px solid #eee;
         }
 
         table {
             width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        th,
-        td {
-            padding: 12px;
-            text-align: center;
-            border-bottom: 1px solid #dee2e6;
+            margin-bottom: 0;
         }
 
         th {
-            background-color: #007bff;
-            color: white;
+            background-color: #007bff !important;
+            color: white !important;
             font-weight: 600;
+            text-transform: uppercase;
+            font-size: 13px;
+            letter-spacing: 0.5px;
+            padding: 15px !important;
+        }
+
+        td {
+            padding: 15px !important;
+            vertical-align: middle;
+            color: #444;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
         }
 
         tr:hover {
-            background-color: #f1f1f1;
+            background-color: #fcfdfe;
         }
 
-         .footer {
-            margin-top: 35px;
-            font-size: 14px;
-            color: #666;
+        .badge-type {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .type-deposit { background: #e6fcf5; color: #0ca678; }
+        .type-withdraw { background: #fff5f5; color: #fa5252; }
+        .type-transfer { background: #e7f5ff; color: #228be6; }
+
+        /* ================= FOOTER ================= */
+
+        .footer {
             text-align: center;
+            padding: 20px;
+            color: #666;
+            font-size: 14px;
         }
     </style>
 </head>
 
 <body>
 
-    <!-- Navbar from transaction.html -->
-    <nav class="navbar navbar-expand-lg px-4 py-2 shadow-sm bg-white">
-        <div class="container-fluid">
-            <a class="navbar-brand fw-bold text-primary">SecureTrust</a>
+    <!-- ================= NAVBAR ================= -->
+
+    <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid px-4">
+            <a class="navbar-brand">
+                <i class="bi bi-bank"></i>
+                SecureTrust
+            </a>
 
             <div class="ms-auto d-flex align-items-center gap-3">
-                <a class="nav-link fw-semibold dashboard-link"
-                    href="{{ url_for('dashboard', pusername=ausername) }}">Dashboard</a>
+                <a class="nav-link" href="{{ url_for('dashboard', pusername=ausername) }}">
+                    <i class="bi bi-grid-fill me-1"></i>
+                    Dashboard
+                </a>
 
                 <!-- Profile Dropdown -->
                 <div class="dropdown">
-                    <button class="btn btn-outline-primary dropdown-toggle fw-bold" type="button" id="profileDropdown"
-                        data-bs-toggle="dropdown" aria-expanded="false">
-                        Profile
+                    <button class="btn btn-outline-primary dropdown-toggle profile-btn" type="button" id="profileDropdown"
+                        data-bs-toggle="dropdown">
+                        <i class="bi bi-person-circle"></i>
+                        {{ ausername }}
                     </button>
-                    <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="profileDropdown">
+                    <ul class="dropdown-menu dropdown-menu-end shadow border-0">
                         <li class="px-3 py-2">
-                            <div class="fw-semibold">{{ ausername }}</div>
+                            <div class="fw-bold">{{ ausername }}</div>
+                            <small class="text-muted">Secure Banking User</small>
                         </li>
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
+                        <li><hr class="dropdown-divider"></li>
                         <li><a class="dropdown-item" href="{{ url_for('profile', username=ausername) }}"><i
                                     class="bi bi-person me-2"></i>View Profile</a></li>
                         <li><a class="dropdown-item" href="{{ url_for('pinchange', username=ausername) }}"><i
                                     class="bi bi-gear me-2"></i>Settings</a></li>
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
+                        <li><hr class="dropdown-divider"></li>
                         <li><a class="dropdown-item text-danger" href="{{ url_for('logout') }}"><i
                                     class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
                     </ul>
@@ -124,87 +191,108 @@
         </div>
     </nav>
 
-    <!-- Main Content -->
-    <div class="container">
-        <h2><i class="bi bi-receipt me-2"></i>Transaction History</h2>
+    <!-- ================= MAIN CONTENT ================= -->
 
-        <!-- Controls Row -->
-        <div class="row g-3 justify-content-center">
-            <!-- Mini Statement -->
-            <div class="col-md-3 col-sm-6">
-                <button class="btn btn-outline-success" onclick="filterMini()">Mini Statement</button>
-            </div>
+    <div class="container main-container">
+        <h2>
+            <i class="bi bi-receipt me-2"></i>
+            Transaction History
+        </h2>
 
-            <!-- Custom Filter Dropdown -->
-            <div class="col-md-3 col-sm-6">
-                <div class="dropdown">
-                    <button class="btn btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown">
-                        Custom Filter
+        <!-- Control Panel -->
+        <div class="control-panel">
+            <div class="row g-3">
+                <div class="col-lg-3 col-md-6">
+                    <button class="btn btn-success w-100" onclick="filterMini()">
+                        <i class="bi bi-lightning-fill me-1"></i> Mini Statement
                     </button>
-                    <div class="dropdown-menu p-3 shadow-sm">
-                        <button class="dropdown-item" onclick="quickFilter('today')">Today</button>
-                        <button class="dropdown-item" onclick="quickFilter('week')">This Week</button>
-                        <button class="dropdown-item" onclick="quickFilter('month')">This Month</button>
-                        <hr>
-                        <label for="fromDate" class="form-label">From</label>
-                        <input type="date" id="fromDate" class="form-control mb-2">
-                        <label for="toDate" class="form-label">To</label>
-                        <input type="date" id="toDate" class="form-control mb-2">
-                        <button class="btn btn-sm btn-primary w-100" onclick="filterCustom()">Apply</button>
+                </div>
+
+                <div class="col-lg-3 col-md-6">
+                    <div class="dropdown">
+                        <button class="btn btn-primary w-100 dropdown-toggle" data-bs-toggle="dropdown">
+                            <i class="bi bi-funnel-fill me-1"></i> Custom Filter
+                        </button>
+                        <div class="dropdown-menu p-4 shadow border-0" style="width: 280px;">
+                            <h6 class="dropdown-header px-0 mb-2">Quick Select</h6>
+                            <button class="dropdown-item rounded" onclick="quickFilter('today')">Today</button>
+                            <button class="dropdown-item rounded" onclick="quickFilter('week')">This Week</button>
+                            <button class="dropdown-item rounded" onclick="quickFilter('month')">This Month</button>
+                            <hr class="my-3">
+                            <h6 class="dropdown-header px-0 mb-2">Date Range</h6>
+                            <div class="mb-2">
+                                <label class="form-label small fw-bold">From</label>
+                                <input type="date" id="fromDate" class="form-control form-control-sm">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label small fw-bold">To</label>
+                                <input type="date" id="toDate" class="form-control form-control-sm">
+                            </div>
+                            <button class="btn btn-primary btn-sm w-100" onclick="filterCustom()">Apply Filter</button>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Search Box -->
-            <div class="col-md-3 col-sm-6">
-                <div class="input-group">
-                    <input type="search" class="form-control" id="searchInput" placeholder="Search..."
-                        onkeyup="filterTable()">
-                    <span class="input-group-text bg-white" style="cursor: pointer;" onclick="filterTable()">
-                        <i class="bi bi-search"></i>
-                    </span>
+                <div class="col-lg-4 col-md-8">
+                    <div class="input-group">
+                        <span class="input-group-text bg-white border-end-0">
+                            <i class="bi bi-search text-muted"></i>
+                        </span>
+                        <input type="search" class="form-control border-start-0" id="searchInput" placeholder="Search transactions..."
+                            onkeyup="filterTable()">
+                    </div>
+                </div>
+
+                <div class="col-lg-2 col-md-4">
+                    <button class="btn btn-danger w-100" onclick="savePDF()">
+                        <i class="bi bi-file-earmark-pdf-fill me-1"></i> PDF
+                    </button>
                 </div>
             </div>
         </div>
 
-        <!-- Save PDF Button -->
-        <div class="row mt-3 justify-content-center">
-            <div class="col-md-3 col-sm-6 text-center">
-                <button class="btn btn-danger" onclick="savePDF()">
-                    <i class="bi bi-file-earmark-pdf me-1"></i> Save PDF
-                </button>
-            </div>
+        <!-- Table -->
+        <div class="table-responsive">
+            <table class="table" id="txnTable">
+                <thead>
+                    <tr>
+                        <th>Date & Time</th>
+                        <th>Type</th>
+                        <th>Amount</th>
+                        <th>Closing Balance</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for txn in transactions %}
+                    <tr>
+                        <td class="text-muted fw-semibold">{{ txn.time }}</td>
+                        <td>
+                            <span class="badge-type {% if 'Deposit' in txn.type %}type-deposit{% elif 'Withdraw' in txn.type %}type-withdraw{% else %}type-transfer{% endif %}">
+                                {{ txn.type }}
+                            </span>
+                        </td>
+                        <td class="fw-bold {% if 'Deposit' in txn.type or 'Received' in txn.type %}text-success{% else %}text-danger{% endif %}">
+                            {% if 'Deposit' in txn.type or 'Received' in txn.type %}+{% else %}-{% endif %} ₹{{ txn.amount }}
+                        </td>
+                        <td class="fw-bold">₹{{ txn.balance }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
 
-        <!-- Transaction Table -->
-        <table id="txnTable">
-            <thead>
-                <tr>
-                    <th>Date & Time</th>
-                    <th>Type</th>
-                    <th>Amount (₹)</th>
-                    <th>Balance After</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for txn in transactions %}
-                <tr>
-                    <td>{{ txn.time }}</td>
-                    <td>{{ txn.type }}</td>
-                    <td>₹{{ txn.amount }}</td>
-                    <td>₹{{ txn.balance }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-
         {% if not transactions %}
-        <p class="text-center text-muted mt-3">No transactions found.</p>
+        <div class="text-center py-5">
+            <i class="bi bi-inbox text-muted display-1"></i>
+            <p class="text-muted mt-3 fs-5">No transactions found in your history.</p>
+        </div>
         {% endif %}
     </div>
 
+    <!-- ================= FOOTER ================= -->
+
     <div class="footer">
-        <p>&copy; SecureTrust Services. All rights reserved.</p>
+        <p>© 2026 SecureTrust Services. All Rights Reserved.</p>
     </div>
 
     <!-- Scripts -->
@@ -225,14 +313,15 @@
         }
 
         function quickFilter(option) {
-            alert(`Filter: ${option} – Apply on server side`);
+            alert(`Quick Filter Applied: ${option}`);
+            // Logic to be implemented on server or client as needed
         }
 
         function filterCustom() {
             const from = document.getElementById("fromDate").value;
             const to = document.getElementById("toDate").value;
-            if (!from || !to) return alert("Select both dates");
-            alert(`Custom Date Range: ${from} to ${to}`);
+            if (!from || !to) return alert("Please select both start and end dates");
+            alert(`Filtering range: ${from} to ${to}`);
         }
 
         function filterMini() {
@@ -242,14 +331,12 @@
             });
         }
 
-        // Save PDF function using jsPDF
         function savePDF() {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
 
             const pageWidth = doc.internal.pageSize.getWidth();
             const pageHeight = doc.internal.pageSize.getHeight();
-            const lineHeight = 7;
             const leftMargin = 14;
             let currentY = 20;
 
@@ -258,76 +345,50 @@
                 hour: '2-digit', minute: '2-digit', hour12: true
             });
 
-            // Header
-            doc.setFontSize(16);
-            doc.setFont('helvetica', 'bold');
-            doc.text("SecureTrust Bank Statement", pageWidth / 2, currentY, { align: 'center' });
-            currentY += lineHeight;
+            doc.setFontSize(22);
+            doc.setTextColor(0, 123, 255);
+            doc.text("SecureTrust Bank", pageWidth / 2, currentY, { align: 'center' });
+            currentY += 10;
+
+            doc.setFontSize(10);
+            doc.setTextColor(100);
+            doc.text("Official Account Statement", pageWidth / 2, currentY, { align: 'center' });
+            currentY += 15;
 
             doc.setFontSize(11);
-            doc.setFont('helvetica', 'normal');
-            doc.text("123 Financial Street, FinCity | support@securetrust.com", pageWidth / 2, currentY, { align: 'center' });
-            currentY += 2 * lineHeight;
+            doc.setTextColor(0);
+            doc.text(`Customer: {{ ausername }}`, leftMargin, currentY);
+            doc.text(`Date Generated: ${timestamp}`, pageWidth - leftMargin, currentY, { align: 'right' });
+            currentY += 15;
 
-            // Customer Info (you can dynamically fill these from backend too)
-            doc.text(`Name: {{ ausername }}`, leftMargin, currentY);
-            doc.text(`Account No: XXXXXXXXXXXX9012`, pageWidth - leftMargin - 60, currentY);
-            currentY += lineHeight;
-            doc.text(`Statement Period: 01-Jul-2025 to 09-Jul-2025`, leftMargin, currentY);
-            currentY += 2 * lineHeight;
-
-            // Table Headers
-            const headers = [["Date", "Description", "Debit (₹)", "Credit (₹)", "Balance (₹)"]];
             const data = [];
-
-            // Build data from HTML table
             const rows = document.querySelectorAll("#txnTable tbody tr");
             rows.forEach(row => {
                 const cells = row.querySelectorAll("td");
                 if (cells.length === 4) {
-                    const dateTime = cells[0].innerText;
-                    const type = cells[1].innerText;
-                    const amount = cells[2].innerText.replace("₹", "").trim();
-                    const balance = cells[3].innerText.replace("₹", "").trim();
-
-                    const debit = type.toLowerCase() === "withdraw" ? amount : "";
-                    const credit = type.toLowerCase() === "deposit" ? amount : "";
-
-                    data.push([dateTime.split(' ')[0], type, debit, credit, balance]);
+                    data.push([
+                        cells[0].innerText,
+                        cells[1].innerText,
+                        cells[2].innerText,
+                        cells[3].innerText
+                    ]);
                 }
             });
 
-            // Render table
             doc.autoTable({
                 startY: currentY,
-                head: headers,
+                head: [["Date & Time", "Transaction Type", "Amount", "Balance"]],
                 body: data,
-                styles: { halign: 'center' },
-                headStyles: { fillColor: [0, 102, 204] },
-                margin: { left: leftMargin, right: leftMargin },
-                didDrawPage: function (data) {
-                    // Footer
-                    const pageNum = doc.internal.getNumberOfPages();
-                    const footerY = pageHeight - 15;
-
-                    doc.setFontSize(10);
-                    doc.setTextColor(100);
-                    doc.text(`Downloaded on: ${timestamp}`, leftMargin, footerY);
-                    doc.text(`Page ${pageNum}`, pageWidth - leftMargin, footerY, { align: 'right' });
-                }
+                headStyles: { fillColor: [0, 123, 255] },
+                alternateRowStyles: { fillColor: [248, 251, 255] },
+                styles: { halign: 'center', fontSize: 9 },
+                margin: { left: leftMargin, right: leftMargin }
             });
 
-            // Signature space
-            const finalY = doc.lastAutoTable.finalY || currentY + 20;
-            doc.setFontSize(12);
-            doc.setTextColor(0);
-            doc.text("Signature: _____________________________", leftMargin, finalY + 15);
-
-            // Save
             doc.save("SecureTrust_Statement.pdf");
         }
     </script>
 
 </body>
 
-</html>
+</html>

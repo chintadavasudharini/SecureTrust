@@ -6,27 +6,143 @@ app.secret_key = 'your_secret_key'  # For session encryption
 app.permanent_session_lifetime = timedelta(minutes=10)
 
 data = {}
+admin_data = {}
 
 @app.before_request
 def make_session_permanent():
     session.permanent = True
 
+    # -------------------- Admin Routes --------------------
+
+@app.route('/admin')
+def admin():
+    return render_template('admin_home.html')    
+
+@app.route('/admin/register', methods=['GET', 'POST'])
+def adminregister():
+    if request.method == 'POST':
+        uname = request.form.get('uname')
+        if uname not in admin_data:
+            admin_data[uname] = {
+                'password': request.form.get('password'),
+                'email': request.form.get('email')
+            }
+            return redirect(url_for('adminlogin'))
+        return 'Admin already exists'
+    return render_template('admin_register.html')
+
+
+@app.route('/admin/login', methods=['GET', 'POST'])
+def adminlogin():
+    if request.method == 'POST':
+        uname = request.form.get('uname')
+        password = request.form.get('password')
+        if uname in admin_data and admin_data[uname]['password'] == password:
+            session['admin'] = uname
+            return redirect(url_for('admin_dashboard'))
+        return 'Invalid admin credentials'
+    return render_template('admin_login.html')
+
+
+@app.route('/admin/dashboard')
+def admin_dashboard():
+    if 'admin' not in session:
+        return redirect(url_for('adminlogin'))
+    return render_template('admin_dashboard.html', admin=session['admin'])
+
+
+@app.route('/admin/viewallusers')
+def admin_view_users():
+    if 'admin' not in session:
+        return redirect(url_for('adminlogin'))
+    return render_template('admin_viewallusers.html', admin=session['admin'], users=[
+        {'username': uname, 'fullname': details['name'], 'account_number': details['account_number']}
+        for uname, details in data.items()
+    ])
+
+
+@app.route('/admin/user/<username>/info')
+def admin_user_info(username):
+    if 'admin' not in session:
+        return redirect(url_for('adminlogin'))
+    return render_template('admin_viewuserinfo.html', user=data[username], ausername=username)
+
+
+@app.route('/admin/user/<username>/transactions')
+def admin_user_transactions(username):
+    if 'admin' not in session:
+        return redirect(url_for('adminlogin'))
+    return render_template('admin_userstament.html', 
+                           username=username, 
+                           admin=session['admin'],
+                           transactions=reversed(data[username]['transactions']))
+
+
+@app.route('/admin/adduser', methods=['GET', 'POST'])
+def admin_add_user():
+    if 'admin' not in session:
+        return redirect(url_for('adminlogin'))
+    
+    if request.method == 'POST':
+        name = request.form.get('name')
+        accno = request.form.get('accno')
+        mobile = request.form.get('mobileno')
+        email = request.form.get('emailid')
+        initial_deposit = int(request.form.get('initial_deposit', 500))
+        
+        # Use name as username for simplicity or generate one
+        username = name.lower().replace(" ", "")
+        
+        if username not in data:
+            data[username] = {
+                'name': name,
+                'account_number': accno,
+                'password': 'password123', # Default password for new users
+                'card_number': 'ST' + accno[-4:], 
+                'pin_no': '1234',
+                'mobile_number': mobile,
+                'email_id': email,
+                'amount': initial_deposit,
+                'transactions': [{
+                    'type': 'Initial Deposit',
+                    'amount': initial_deposit,
+                    'balance': initial_deposit,
+                    'time': datetime.now().strftime('%Y-%m-%d %H:%M')
+                }]
+            }
+            flash(f'User {name} enrolled successfully!')
+            return redirect(url_for('admin_view_users'))
+        else:
+            flash('User already exists.')
+            
+    return render_template('admin_adduser.html', admin=session['admin'])
+
+
+@app.route('/admin/profile/<admin>')
+def admin_profile(admin):
+    return f"Admin Profile for {admin} (add template if needed)"
+
+
+@app.route('/admin/settings/<admin>')
+def admin_settings(admin):
+    return f"Admin Settings for {admin} (add template if needed)"
+
+# -------------------- User Routes --------------------
 
 @app.route('/')
 def welcome():
     return render_template('welcome.html')
-
-
+    
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
         username = request.form.get('uname')
         password = request.form.get('password')
-        name = request.form.get('name')
-        accountno = request.form.get('accno')
-        cardno = request.form.get('cardno')
-        pinno = request.form.get('pin')
-        mobile = request.form.get('mobileno')
+        name = request.form.get('name', username) # Fallback to username if name is missing
+        accountno = request.form.get('accno', 'ST-' + str(datetime.now().timestamp())[:10])
+        cardno = request.form.get('cardno', 'XXXX-XXXX-XXXX-' + str(datetime.now().timestamp())[-4:])
+        pinno = request.form.get('pin', '1234')
+        mobile = request.form.get('mobileno', '0000000000')
         email = request.form.get('emailid')
 
         if username not in data:

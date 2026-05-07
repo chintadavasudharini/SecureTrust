@@ -5,76 +5,128 @@
   <meta charset="UTF-8">
   <title>Transfer | SecureTrust</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Bootstrap -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Bootstrap Icons -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
- 
 
   <style>
     body {
-      background-color: #e3e3e3;
-      font-family: Arial, sans-serif;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #eef4ff, #f8fbff);
+      min-height: 100vh;
     }
+
+    /* ================= NAVBAR ================= */
 
     .navbar {
-      background-color: white;
-      padding: 10px 20px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      background: white;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+      padding: 12px 0;
     }
 
-    .navbar a {
-      color: #007bff;
+    .navbar-brand {
+      font-size: 1.5rem;
       font-weight: bold;
+      color: #007bff !important;
+    }
+
+    .nav-link {
+      color: #007bff !important;
+      font-weight: 600;
+    }
+
+    .profile-btn {
+      border-radius: 30px;
+      font-weight: 600;
+      padding: 8px 20px;
+    }
+
+    /* ================= FORM CONTAINER ================= */
+
+    .form-wrapper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 85vh;
+      padding: 20px;
     }
 
     .form-container {
-      background-color: white;
-      max-width: 420px;
-      margin-left: auto;
-      margin-right: auto;
-      margin-top: 110px;
-      padding: 30px;
-      border-radius: 8px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      border-left: 6px solid #007bff;
-      animation: fadeIn 0.5s ease-in-out forwards;
-      opacity: 0;
+      background: white;
+      width: 100%;
+      max-width: 500px;
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+      border-left: 6px solid #0d6efd;
+      animation: fadeUp 0.6s ease;
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(40px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     .form-container h3 {
       margin-bottom: 25px;
-      font-weight: 600;
-      color: #007bff;
+      font-weight: bold;
+      color: #0d6efd;
+      text-align: center;
     }
 
-    label {
-      font-weight: 500;
+    .form-control {
+      height: 50px;
+      border-radius: 10px;
+      margin-bottom: 15px;
+    }
+
+    .form-control:focus {
+      box-shadow: none;
+      border-color: #0d6efd;
+    }
+
+    .form-control[readonly] {
+        background-color: #f8fbff;
+        font-weight: 600;
+        color: #444;
+    }
+
+    /* ================= BUTTONS ================= */
+
+    .btn-transfer {
+      width: 100%;
+      height: 50px;
+      border-radius: 10px;
+      font-weight: bold;
+      font-size: 16px;
+      transition: 0.3s;
       margin-top: 10px;
     }
 
-    input[readonly] {
-      background-color: #f9f9f9;
-      font-weight: bold;
+    .btn-transfer:hover {
+      transform: scale(1.02);
+      box-shadow: 0 5px 15px rgba(13, 110, 253, 0.3);
     }
 
-    .btn-primary {
-      width: 100%;
-      margin-top: 20px;
-      font-weight: 500;
+    /* ================= FOOTER ================= */
+
+    .footer {
+      text-align: center;
+      padding: 20px;
+      color: #666;
+      font-size: 14px;
     }
 
-     @keyframes fadeIn {
-      0% {
-        transform: translateY(40px);
-        opacity: 0;
-      }
-
-      100% {
-        transform: translateY(0);
-        opacity: 1;
-      }
-    }
-
-    /* Remove spin arrows from number input */
+    /* Remove spin buttons */
     input::-webkit-outer-spin-button,
     input::-webkit-inner-spin-button {
       -webkit-appearance: none;
@@ -84,100 +136,123 @@
     input[type="number"] {
       -moz-appearance: textfield;
     }
-
- 
-
-     .footer {
-            margin-top: 40px;
-            font-size: 14px;
-            color: #666;
-            text-align: center;
-        }
   </style>
 </head>
 
 <body>
 
-   <!-- Navbar -->
-<nav class="navbar navbar-expand-lg px-4 py-2 shadow-sm bg-white">
-  <div class="container-fluid">
-    <a class="navbar-brand fw-bold text-primary">SecureTrust</a>
+  <!-- ================= NAVBAR ================= -->
 
-    <div class="ms-auto d-flex align-items-center gap-3">
-      <a class="nav-link fw-semibold" href="{{ url_for('dashboard', pusername=ausername) }}">Dashboard</a>
-
-      <!-- Profile Dropdown -->
-      <div class="dropdown">
-        <button class="btn btn-outline-primary dropdown-toggle fw-bold" type="button" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-          Profile
-        </button>
-        <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="profileDropdown">
-          <li class="px-3 py-2">
-            <div class="fw-semibold">{{ ausername }}</div>
-          </li>
-          <li><hr class="dropdown-divider"></li>
-          <li><a class="dropdown-item" href="{{ url_for('profile', username=ausername) }}"><i class="bi bi-person me-2"></i>View Profile</a></li>
-          <li><a class="dropdown-item" href="{{ url_for('pinchange', username=ausername) }}"><i class="bi bi-gear me-2"></i>Settings</a></li>
-          <li><hr class="dropdown-divider"></li>
-          <li><a class="dropdown-item text-danger" href="{{ url_for('logout') }}"><i class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</nav>
-
-
-  <!-- Navbar 
   <nav class="navbar navbar-expand-lg">
-    <div class="container-fluid">
-      <a class="navbar-brand">SecureTrust</a>
-      <div class="ms-auto">
-        <a class="btn btn-light me-2" href="{{ url_for('dashboard', pusername=ausername) }}">Dashboard</a>
-        <a class="btn btn-outline-primary" href="{{ url_for('profile', username=ausername) }}">Profile</a>
+    <div class="container-fluid px-4">
+      <a class="navbar-brand">
+        <i class="bi bi-bank"></i>
+        SecureTrust
+      </a>
+
+      <div class="ms-auto d-flex align-items-center gap-3">
+        <a class="nav-link" href="{{ url_for('dashboard', pusername=ausername) }}">
+          <i class="bi bi-grid-fill me-1"></i>
+          Dashboard
+        </a>
+
+        <!-- Profile Dropdown -->
+        <div class="dropdown">
+          <button class="btn btn-outline-primary dropdown-toggle profile-btn" type="button" id="profileDropdown"
+            data-bs-toggle="dropdown">
+            <i class="bi bi-person-circle"></i>
+            {{ ausername }}
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end shadow border-0">
+            <li class="px-3 py-2">
+              <div class="fw-bold">{{ ausername }}</div>
+              <small class="text-muted">Secure Banking User</small>
+            </li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="{{ url_for('profile', username=ausername) }}"><i
+                  class="bi bi-person me-2"></i>View Profile</a></li>
+            <li><a class="dropdown-item" href="{{ url_for('pinchange', username=ausername) }}"><i
+                  class="bi bi-gear me-2"></i>Settings</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item text-danger" href="{{ url_for('logout') }}"><i
+                  class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
+          </ul>
+        </div>
       </div>
     </div>
-  </nav> -->
+  </nav>
 
   <!-- Flash Messages -->
-{% with messages = get_flashed_messages() %}
-  {% if messages %}
-    {% for message in messages %}
-      <div class="alert alert-info alert-dismissible fade show text-center mt-3 mx-auto w-75" role="alert">
-        {{ message }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-      </div>
-    {% endfor %}
-  {% endif %}
-{% endwith %}
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert alert-info alert-dismissible fade show text-center mt-3 mx-auto w-75" role="alert">
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
 
+  <!-- ================= TRANSFER SECTION ================= -->
 
-  <!-- Transfer Form -->
-  <div class="form-container">
-    <h3><i class="bi bi-arrow-left-right me-2"></i>Transfer Funds</h3>
-    <form method="POST">
-      <div class="mb-3">
-        <label for="from">From Account Number</label>
-        <input type="text" class="form-control" name="sender_accno" value="{{ sender_accno }}" readonly>
-      </div>
-      <div class="mb-3">
-        <label for="to">To Account Number</label>
-        <input type="text" class="form-control" name="receiver_accno" placeholder="Receiver Account Number" required>
-      </div>
-      <div class="mb-3">
-        <label for="amount">Transfer Amount (₹)</label>
-        <input type="number" class="form-control" name="amount" placeholder="Enter amount to transfer" required min="1">
-      </div>
-      <button type="submit" class="btn btn-primary">Transfer Now</button>
-    </form>
+  <div class="form-wrapper">
+    <div class="form-container">
+      <h3>
+        <i class="bi bi-arrow-left-right me-2"></i>
+        Transfer Funds
+      </h3>
+      <p class="text-muted text-center mb-4">Send money instantly to other accounts</p>
+      
+      <form method="POST">
+        <div class="mb-3">
+          <label class="form-label fw-semibold">From Account</label>
+          <div class="input-group">
+            <span class="input-group-text bg-light border-end-0">
+              <i class="bi bi-person-badge"></i>
+            </span>
+            <input type="text" class="form-control border-start-0" name="sender_accno" value="{{ sender_accno }}" readonly>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label fw-semibold">To Account Number</label>
+          <div class="input-group">
+            <span class="input-group-text bg-light border-end-0">
+              <i class="bi bi-send-fill"></i>
+            </span>
+            <input type="text" class="form-control border-start-0" name="receiver_accno" placeholder="Receiver Account Number" required>
+          </div>
+        </div>
+
+        <div class="mb-4">
+          <label class="form-label fw-semibold">Amount (₹)</label>
+          <div class="input-group">
+            <span class="input-group-text bg-light border-end-0">
+              <i class="bi bi-currency-rupee"></i>
+            </span>
+            <input type="number" class="form-control border-start-0" name="amount" placeholder="Enter amount to transfer" required min="1">
+          </div>
+          <small class="text-muted mt-2 d-block">Minimum balance of ₹500 required after transfer.</small>
+        </div>
+        
+        <button type="submit" class="btn btn-primary btn-transfer">
+          <i class="bi bi-lightning-charge-fill me-2"></i>
+          Transfer Now
+        </button>
+      </form>
+    </div>
   </div>
 
+  <!-- ================= FOOTER ================= -->
+
   <div class="footer">
-    <p>&copy; SecureTrust Services. All rights reserved.</p>
+    <p>© 2026 SecureTrust Services. All Rights Reserved.</p>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
-
 </body>
 
 </html>
+
