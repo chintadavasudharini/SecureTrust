@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>Withdraw | SecureTrust</title>
+  <title>Other Bank Transfer | SecureTrust</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <!-- Bootstrap -->
@@ -15,7 +15,7 @@
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(to right, #fff5f5, #fffcfc);
+      background: linear-gradient(to right, #fff4e5, #fffcf8);
       min-height: 100vh;
     }
 
@@ -30,11 +30,11 @@
     .navbar-brand {
       font-size: 1.5rem;
       font-weight: bold;
-      color: #007bff !important;
+      color: #ff6b00 !important;
     }
 
     .nav-link {
-      color: #007bff !important;
+      color: #ff6b00 !important;
       font-weight: 600;
     }
 
@@ -57,51 +57,70 @@
     .form-container {
       background: white;
       width: 100%;
-      max-width: 500px;
+      max-width: 550px;
       padding: 40px;
       border-radius: 20px;
       box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
-      border-left: 6px solid #dc3545;
+      border-left: 6px solid #ff6b00;
       animation: fadeUp 0.6s ease;
     }
 
     @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(40px); }
-      to { opacity: 1; transform: translateY(0); }
+      from {
+        opacity: 0;
+        transform: translateY(40px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     .form-container h3 {
       margin-bottom: 25px;
       font-weight: bold;
-      color: #dc3545;
+      color: #ff6b00;
       text-align: center;
     }
 
     .form-control {
       height: 50px;
       border-radius: 10px;
-      margin-bottom: 18px;
+      margin-bottom: 15px;
     }
 
     .form-control:focus {
       box-shadow: none;
-      border-color: #dc3545;
+      border-color: #ff6b00;
+    }
+
+    .form-control[readonly] {
+      background-color: #fcfaff;
+      font-weight: 600;
+      color: #444;
     }
 
     /* ================= BUTTONS ================= */
 
-    .btn-withdraw {
+    .btn-transfer {
       width: 100%;
       height: 50px;
       border-radius: 10px;
       font-weight: bold;
       font-size: 16px;
       transition: 0.3s;
+      margin-top: 10px;
+      background: #ff6b00;
+      color: white;
+      border: none;
     }
 
-    .btn-withdraw:hover {
+    .btn-transfer:hover {
       transform: scale(1.02);
-      box-shadow: 0 5px 15px rgba(220, 53, 69, 0.3);
+      box-shadow: 0 5px 15px rgba(255, 107, 0, 0.3);
+      background: #e85f00;
+      color: white;
     }
 
     /* ================= FOOTER ================= */
@@ -113,7 +132,6 @@
       font-size: 14px;
     }
 
-    /* Remove spin buttons */
     input::-webkit-outer-spin-button,
     input::-webkit-inner-spin-button {
       -webkit-appearance: none;
@@ -130,7 +148,7 @@
 
   <!-- ================= NAVBAR ================= -->
 
-    <nav class="navbar navbar-expand-lg">
+  <nav class="navbar navbar-expand-lg">
     <div class="container-fluid px-4">
       <a class="navbar-brand">
         <i class="bi bi-bank"></i>
@@ -233,31 +251,41 @@
     {% endwith %}
   </div>
 
-  <!-- ================= WITHDRAW FORM ================= -->
+  <!-- ================= TRANSFER FORM ================= -->
 
   <div class="form-wrapper">
     <div class="text-center w-100" style="max-width: 500px;">
       <div class="form-container">
         <h3>
-          <i class="bi bi-cash-stack me-2"></i>
-          Withdraw Funds
+          <i class="bi bi-bank me-2"></i>
+          Other Bank Transfer
         </h3>
 
-        <form action="{{ url_for('withdraw', wusername=ausername) }}" method="POST">
+        <form action="{{ url_for('transfer2', username=ausername) }}" method="POST">
           <div class="mb-3 text-start">
-            <label class="form-label text-muted small fw-bold">YOUR ACCOUNT NUMBER</label>
+            <label class="form-label text-muted small fw-bold">SENDER ACCOUNT NUMBER</label>
             <input type="text" class="form-control" value="{{ sender_accno }}" readonly>
           </div>
 
-          <div class="mb-4 text-start">
-            <label class="form-label text-muted small fw-bold">ENTER WITHDRAW AMOUNT (₹)</label>
-            <input type="number" name="amount" class="form-control" placeholder="0.00" required>
-            <small class="text-muted mt-2 d-block">Minimum balance of ₹500 required after withdrawal.</small>
+          <div class="mb-3 text-start">
+            <label class="form-label text-muted small fw-bold">BENEFICIARY ACCOUNT NUMBER</label>
+            <input type="text" name="receiver_accno" class="form-control" placeholder="Enter Account Number" required>
           </div>
 
-          <button type="submit" class="btn btn-danger btn-withdraw">
-            <i class="bi bi-dash-circle-fill me-2"></i>
-            Withdraw Now
+          <div class="mb-3 text-start">
+            <label class="form-label text-muted small fw-bold">IFSC CODE</label>
+            <input type="text" name="ifsc" class="form-control" placeholder="e.g. SBIN0001234" required>
+          </div>
+
+          <div class="mb-4 text-start">
+            <label class="form-label text-muted small fw-bold">TRANSFER AMOUNT (₹)</label>
+            <input type="number" name="amount" class="form-control" placeholder="0.00" required>
+            <small class="text-muted mt-2 d-block">Minimum balance of ₹500 required after transfer.</small>
+          </div>
+
+          <button type="submit" class="btn btn-orange btn-transfer">
+            <i class="bi bi-send-fill me-2"></i>
+            Send Money Now
           </button>
         </form>
       </div>
@@ -273,14 +301,12 @@
     </div>
   </div>
 
-  <!-- ================= FOOTER ================= -->
 
   <div class="footer">
-    <p>© 2026 SecureTrust Services. All Rights Reserved.</p>
+    <p>© 2026 SecureTrust Banking. All Rights Reserved.</p>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
 </body>
 
 </html>

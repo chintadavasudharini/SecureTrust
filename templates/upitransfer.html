@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>Delete Account | SecureTrust</title>
+  <title>UPI Transfer | SecureTrust</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <!-- Bootstrap -->
@@ -15,7 +15,7 @@
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(to right, #fff5f5, #fffcfc);
+      background: linear-gradient(to right, #f3e8ff, #f8fbff);
       min-height: 100vh;
     }
 
@@ -38,26 +38,31 @@
       font-weight: 600;
     }
 
-    /* ================= CONTAINER ================= */
+    .profile-btn {
+      border-radius: 30px;
+      font-weight: 600;
+      padding: 8px 20px;
+    }
 
-    .delete-wrapper {
+    /* ================= FORM CONTAINER ================= */
+
+    .form-wrapper {
       display: flex;
       justify-content: center;
       align-items: center;
-      min-height: 80vh;
+      min-height: 85vh;
       padding: 20px;
     }
 
-    .delete-card {
+    .form-container {
       background: white;
       width: 100%;
-      max-width: 550px;
-      padding: 50px 40px;
+      max-width: 500px;
+      padding: 40px;
       border-radius: 20px;
-      box-shadow: 0 10px 30px rgba(220, 53, 69, 0.1);
-      border: 1px solid #f8d7da;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+      border-left: 6px solid #9333ea;
       animation: fadeUp 0.6s ease;
-      text-align: center;
     }
 
     @keyframes fadeUp {
@@ -65,61 +70,50 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    .delete-card i.main-icon {
-      font-size: 70px;
-      color: #dc3545;
+    .form-container h3 {
       margin-bottom: 25px;
-      display: block;
-    }
-
-    .delete-card h2 {
       font-weight: bold;
-      color: #333;
-      margin-bottom: 15px;
+      color: #9333ea;
+      text-align: center;
     }
 
-    .warning-box {
-        background: #fff5f5;
-        border-radius: 12px;
-        padding: 20px;
-        margin: 25px 0;
-        text-align: left;
-        border-left: 5px solid #dc3545;
+    .form-control {
+      height: 50px;
+      border-radius: 10px;
+      margin-bottom: 18px;
     }
 
-    .warning-box ul {
-        margin: 0;
-        padding-left: 20px;
-        color: #555;
-        font-size: 14px;
+    .form-control:focus {
+      box-shadow: none;
+      border-color: #9333ea;
+    }
+
+    .form-control[readonly] {
+        background-color: #f8fbff;
+        font-weight: 600;
+        color: #444;
     }
 
     /* ================= BUTTONS ================= */
 
-    .btn-delete {
-      background: #dc3545;
-      color: white;
-      border: none;
+    .btn-transfer {
       width: 100%;
       height: 50px;
       border-radius: 10px;
       font-weight: bold;
       font-size: 16px;
       transition: 0.3s;
+      margin-top: 10px;
+      background: #9333ea;
+      color: white;
+      border: none;
     }
 
-    .btn-delete:hover {
-      background: #c82333;
+    .btn-transfer:hover {
       transform: scale(1.02);
-      box-shadow: 0 5px 15px rgba(220, 53, 69, 0.3);
-    }
-
-    .btn-cancel {
-        width: 100%;
-        height: 50px;
-        border-radius: 10px;
-        font-weight: 600;
-        margin-top: 15px;
+      box-shadow: 0 5px 15px rgba(147, 51, 234, 0.3);
+      background: #7e22ce;
+      color: white;
     }
 
     /* ================= FOOTER ================= */
@@ -130,6 +124,16 @@
       color: #666;
       font-size: 14px;
     }
+
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    input[type="number"] {
+      -moz-appearance: textfield;
+    }
   </style>
 </head>
 
@@ -137,7 +141,7 @@
 
   <!-- ================= NAVBAR ================= -->
 
-    <nav class="navbar navbar-expand-lg">
+  <nav class="navbar navbar-expand-lg">
     <div class="container-fluid px-4">
       <a class="navbar-brand">
         <i class="bi bi-bank"></i>
@@ -223,45 +227,72 @@
     </div>
   </nav>
 
-  <!-- ================= DELETE SECTION ================= -->
+  <!-- ================= FLASH MESSAGES ================= -->
 
-  <div class="delete-wrapper">
-    <div class="delete-card">
-      <i class="bi bi-exclamation-triangle-fill main-icon"></i>
-      
-      <h2>Are you sure?</h2>
-      <p class="text-muted">This action is irreversible and will permanently close your account.</p>
+  <div class="container mt-3" style="max-width: 500px;">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    {% for category, message in messages %}
+    <div class="alert alert-{{ category }} alert-dismissible fade show shadow-sm" role="alert"
+      style="border-radius: 12px;">
+      <i class="bi bi-info-circle-fill me-2"></i>
+      {{ message }}
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+  </div>
 
-      <div class="warning-box">
-          <p class="fw-bold text-danger mb-2"><i class="bi bi-info-circle me-1"></i> What happens next:</p>
-          <ul>
-              <li>All your account data will be permanently deleted.</li>
-              <li>You will lose access to your transaction history.</li>
-              <li>Any remaining balance should be withdrawn before proceeding.</li>
-          </ul>
+  <!-- ================= TRANSFER FORM ================= -->
+
+  <div class="form-wrapper">
+    <div class="text-center w-100" style="max-width: 500px;">
+      <div class="form-container">
+        <h3>
+          <i class="bi bi-phone me-2"></i>
+          UPI Transfer
+        </h3>
+
+        <form action="{{ url_for('upitransfer', username=ausername) }}" method="POST">
+          <div class="mb-3 text-start">
+            <label class="form-label text-muted small fw-bold">SENDER ACCOUNT NUMBER</label>
+            <input type="text" class="form-control" value="{{ sender_accno }}" readonly>
+          </div>
+
+          <div class="mb-3 text-start">
+            <label class="form-label text-muted small fw-bold">RECIPIENT UPI ID / MOBILE</label>
+            <input type="text" name="upi_id" class="form-control" placeholder="e.g. user@bank or 9876543210" required>
+          </div>
+
+          <div class="mb-4 text-start">
+            <label class="form-label text-muted small fw-bold">TRANSFER AMOUNT (₹)</label>
+            <input type="number" name="amount" class="form-control" placeholder="0.00" required>
+            <small class="text-muted mt-2 d-block">Instant transfer, no hidden charges.</small>
+          </div>
+
+          <button type="submit" class="btn btn-purple btn-transfer">
+            <i class="bi bi-phone-fill me-2"></i>
+            Send Money
+          </button>
+        </form>
       </div>
-      
-      <form action="{{ url_for('deleteaccount', pusername=ausername) }}">
-        <button type="submit" class="btn btn-delete">
-          <i class="bi bi-trash3-fill me-2"></i>
-          Yes, Delete My Account
-        </button>
-      </form>
 
-      <a href="{{ url_for('dashboard', pusername=ausername) }}" class="btn btn-outline-secondary btn-cancel">
-          No, Take Me Back
-      </a>
+      <!-- Back Button -->
+      <div class="mt-4 text-center">
+        <a href="{{ url_for('transaction', username=ausername) }}" class="btn btn-primary px-4 shadow-sm"
+          style="border-radius: 12px; font-weight: 600;">
+          <i class="bi bi-arrow-left me-2"></i>
+          Back to Transactions
+        </a>
+      </div>
     </div>
   </div>
 
-  <!-- ================= FOOTER ================= -->
-
   <div class="footer">
-    <p>© 2026 SecureTrust Services. All Rights Reserved.</p>
+    <p>© 2026 SecureTrust UPI Services. All Rights Reserved.</p>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
 </body>
-
 </html>

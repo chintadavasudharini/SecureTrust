@@ -190,6 +190,11 @@ def dashboard(pusername):
         flash("Please login to continue.")
         return redirect(url_for('login'))
 
+    if pusername not in data:
+        flash('Session expired or user data lost. Please login again.', 'danger')
+        session.clear()
+        return redirect(url_for('login'))
+
     return render_template('dashboard.html',
                            ausername=pusername,
                            wbalanceamount=int(data[pusername]['amount']))
@@ -198,6 +203,11 @@ def dashboard(pusername):
 @app.route('/balance/<busername>')
 def balance(busername):
     if 'user' not in session or session['user'] != busername:
+        return redirect(url_for('login'))
+
+    if busername not in data:
+        flash('Session expired or user data lost. Please login again.', 'danger')
+        session.clear()
         return redirect(url_for('login'))
 
     return render_template('balance.html',
@@ -332,6 +342,84 @@ def transfer(username):
     return render_template('transfer.html', ausername=username, sender_accno=sender_acc)
 
 
+@app.route('/transfer2/<username>', methods=['GET', 'POST'])
+def transfer2(username):
+    if 'user' not in session or session['user'] != username:
+        return redirect(url_for('login'))
+
+    if username not in data:
+        flash('Session expired. Please login again.', 'danger')
+        return redirect(url_for('login'))
+
+    sender_acc = data[username]['account_number']
+
+    if request.method == 'POST':
+        bank_name = request.form.get('bank_name')
+        receiver_acc = request.form.get('receiver_accno')
+        ifsc = request.form.get('ifsc_code')
+        amount = int(request.form.get('amount'))
+
+        if amount <= 0:
+            flash("Invalid transfer amount.", "danger")
+        elif data[username]['amount'] - amount < 500:
+            flash("Transfer denied. Minimum ₹500 balance must remain.", "danger")
+        else:
+            # Simulate Other Bank Transfer
+            data[username]['amount'] -= amount
+            now = datetime.now().strftime('%Y-%m-%d %H:%M')
+
+            data[username]['transactions'].append({
+                'type': f'Other Bank ({bank_name})',
+                'amount': amount,
+                'balance': data[username]['amount'],
+                'time': now,
+                'to': receiver_acc
+            })
+
+            flash(f"Success: ₹{amount} transferred to {bank_name} account {receiver_acc}", "success")
+            return redirect(url_for('dashboard', pusername=username))
+
+    return render_template('transfer2.html', ausername=username, sender_accno=sender_acc)
+
+
+@app.route('/upitransfer/<username>', methods=['GET', 'POST'])
+def upitransfer(username):
+    if 'user' not in session or session['user'] != username:
+        return redirect(url_for('login'))
+
+    if username not in data:
+        flash('Session expired. Please login again.', 'danger')
+        return redirect(url_for('login'))
+
+    sender_acc = data[username]['account_number']
+
+    if request.method == 'POST':
+        upi_id = request.form.get('upi_id')
+        amount = int(request.form.get('amount'))
+
+        if amount <= 0:
+            flash("Invalid amount.", "danger")
+        elif data[username]['amount'] - amount < 500:
+            flash("Insufficient balance. Minimum ₹500 must remain.", "danger")
+        else:
+            # Simulate UPI Transfer
+            data[username]['amount'] -= amount
+            now = datetime.now().strftime('%Y-%m-%d %H:%M')
+
+            data[username]['transactions'].append({
+                'type': 'UPI Payment',
+                'amount': amount,
+                'balance': data[username]['amount'],
+                'time': now,
+                'to': upi_id
+            })
+
+            flash(f"Success: ₹{amount} paid via UPI to {upi_id}", "success")
+            return redirect(url_for('dashboard', pusername=username))
+
+    return render_template('upitransfer.html', ausername=username, sender_accno=sender_acc)
+
+
 @app.route('/accountstatement/<username>')
 def accountstatement(username):
     if 'user' not in session or session['user'] != username:
@@ -340,24 +428,264 @@ def accountstatement(username):
     user_txns = data[username].get('transactions', [])
     return render_template('statement.html', username=username, ausername=username, transactions=reversed(user_txns))
 
+# ================= LOAN PAGE =================
 
-@app.route('/pin/<username>', methods=['GET', 'POST'])
-def pinchange(username):
+@app.route('/loan/<username>')
+def loan(username):
+
     if 'user' not in session or session['user'] != username:
         return redirect(url_for('login'))
 
+    if username not in data:
+        flash('User data not found. Please log in again.', 'danger')
+        return redirect(url_for('login'))
+
+    return render_template(
+        'loan.html',
+        ausername=username,
+        user=data[username]
+    )
+
+
+# ================= FIXED DEPOSIT PAGE =================
+
+@app.route('/fd/<username>')
+def fd(username):
+
+    if 'user' not in session or session['user'] != username:
+        return redirect(url_for('login'))
+
+    if username not in data:
+        flash('User data not found. Please log in again.', 'danger')
+        return redirect(url_for('login'))
+
+    return render_template(
+        'fd.html',
+        ausername=username,
+        user=data[username]
+    )
+
+
+# ================= CARD CENTER PAGE =================
+
+@app.route('/card/<username>')
+def card(username):
+
+    if 'user' not in session or session['user'] != username:
+        return redirect(url_for('login'))
+
+    return render_template(
+        'card.html',
+        ausername=username
+    )
+
+# ================= CARD SERVICES ROUTES =================
+
+# ---------------- VIEW CARD ----------------
+
+@app.route('/viewcard/<username>', methods=['GET', 'POST'])
+def viewcard(username):
+
+    if username not in data:
+        flash('User not found!', 'danger')
+        return redirect(url_for('login'))
+
+    return render_template(
+        'viewcard.html',
+        ausername=username
+    )
+
+
+# ---------------- CHANGE CARD PIN ----------------
+
+@app.route('/changecardpin/<username>', methods=['GET', 'POST'])
+def changecardpin(username):
+
+    if username not in data:
+        flash('User not found!', 'danger')
+        return redirect(url_for('login'))
+
     if request.method == 'POST':
+
+        accountnumber = request.form.get('accountnumber')
+        cardtype = request.form.get('cardtype')
+        cardnumber = request.form.get('cardnumber')
+        cardholder = request.form.get('cardholder')
+        expiry = request.form.get('expiry')
+        cvv = request.form.get('cvv')
+
+        currentpin = request.form.get('currentpin')
         newpin = request.form.get('newpin')
-        data[username]['pin_no'] = newpin
-        flash("PIN changed successfully!")
-        return redirect(url_for('dashboard', pusername=username))
+        confirmpin = request.form.get('confirmpin')
 
-    return render_template('changepin.html', ausername=username)
+        # ================= VALIDATIONS =================
 
+        if newpin != confirmpin:
+
+            flash('New PIN and Confirm PIN do not match!', 'danger')
+
+            return redirect(
+                url_for(
+                    'changecardpin',
+                    username=username
+                )
+            )
+
+        if len(newpin) != 4 or not newpin.isdigit():
+
+            flash('PIN must contain exactly 4 digits!', 'danger')
+
+            return redirect(
+                url_for(
+                    'changecardpin',
+                    username=username
+                )
+            )
+
+        flash('Card PIN updated successfully!', 'success')
+
+        return redirect(
+            url_for(
+                'changecardpin',
+                username=username
+            )
+        )
+
+    return render_template(
+        'changecardpin.html',
+        ausername=username
+    )
+
+
+# ---------------- CHANGE PASSWORD ----------------
+
+@app.route('/changepassword/<username>', methods=['GET', 'POST'])
+def changepassword(username):
+
+    if username not in data:
+        flash('User not found!', 'danger')
+        return redirect(url_for('login'))
+
+    if request.method == 'POST':
+
+        email = request.form.get('email')
+        currentpassword = request.form.get('currentpassword')
+        newpassword = request.form.get('newpassword')
+        confirmpassword = request.form.get('confirmpassword')
+
+        # ================= VALIDATIONS =================
+
+        if newpassword != confirmpassword:
+            flash('New Password and Confirm Password do not match!', 'danger')
+            return redirect(url_for('changepassword', username=username))
+
+        if data[username]['password'] != currentpassword:
+            flash('Current password is incorrect!', 'danger')
+            return redirect(url_for('changepassword', username=username))
+
+        if data[username].get('email_id') != email:
+            flash('Email address does not match our records!', 'danger')
+            return redirect(url_for('changepassword', username=username))
+
+        # Update Password
+        data[username]['password'] = newpassword
+        
+        flash('Password updated successfully!', 'success')
+
+        return redirect(url_for('changepassword', username=username))
+
+    return render_template(
+        'changepassword.html',
+        ausername=username
+    )
+
+
+# ---------------- BLOCK CARD ----------------
+
+@app.route('/blockcard/<username>', methods=['GET', 'POST'])
+def blockcard(username):
+
+    if username not in data:
+        flash('User not found!', 'danger')
+        return redirect(url_for('login'))
+
+    if request.method == 'POST':
+
+        accountnumber = request.form.get('accountnumber')
+        cardtype = request.form.get('cardtype')
+        cardnumber = request.form.get('cardnumber')
+        cardholder = request.form.get('cardholder')
+        expiry = request.form.get('expiry')
+        cvv = request.form.get('cvv')
+        pin = request.form.get('pin')
+
+        # ================= VALIDATION =================
+
+        if len(pin) != 4 or not pin.isdigit():
+
+            flash('PIN must contain exactly 4 digits!', 'danger')
+
+            return redirect(
+                url_for(
+                    'blockcard',
+                    username=username
+                )
+            )
+
+        flash('Your card has been blocked successfully!', 'success')
+
+        return redirect(
+            url_for(
+                'blockcard',
+                username=username
+            )
+        )
+
+    return render_template(
+        'blockcard.html',
+        ausername=username
+    )
+
+
+# ---------------- REQUEST CARD ----------------
+
+@app.route('/requestcard/<username>', methods=['GET', 'POST'])
+def requestcard(username):
+
+    if username not in data:
+        flash('User not found!', 'danger')
+        return redirect(url_for('login'))
+
+    if request.method == 'POST':
+
+        accountnumber = request.form.get('accountnumber')
+        cardtype = request.form.get('cardtype')
+
+        flash(
+            f'{cardtype} request submitted successfully!',
+            'success'
+        )
+
+        return redirect(
+            url_for(
+                'requestcard',
+                username=username
+            )
+        )
+
+    return render_template(
+        'requestcard.html',
+        ausername=username
+    )
 
 @app.route('/profile/<username>')
 def profile(username):
     if 'user' not in session or session['user'] != username:
+        return redirect(url_for('login'))
+
+    if username not in data:
+        flash('Session expired or user data lost. Please login again.', 'danger')
+        session.clear()
         return redirect(url_for('login'))
 
     return render_template('profile.html', ausername=username, user=data[username])

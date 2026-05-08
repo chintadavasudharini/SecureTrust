@@ -47,77 +47,84 @@
     }
 
     @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(30px); }
-      to { opacity: 1; transform: translateY(0); }
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     .info-card {
-        background: white;
-        border-radius: 20px;
-        padding: 40px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-        border-top: 6px solid #007bff;
-        margin-bottom: 30px;
+      background: white;
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+      border-top: 6px solid #007bff;
+      margin-bottom: 30px;
     }
 
     .section-title {
-        font-weight: 800;
-        text-transform: uppercase;
-        font-size: 14px;
-        letter-spacing: 1px;
-        color: #007bff;
-        margin-bottom: 25px;
-        padding-bottom: 10px;
-        border-bottom: 2px solid #eef4ff;
-        display: flex;
-        align-items: center;
-        gap: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+      font-size: 14px;
+      letter-spacing: 1px;
+      color: #007bff;
+      margin-bottom: 25px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #eef4ff;
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
 
     /* ================= FORM STYLING ================= */
 
     .form-label {
-        font-weight: 600;
-        color: #666;
-        font-size: 14px;
+      font-weight: 600;
+      color: #666;
+      font-size: 14px;
     }
 
     .form-control {
-        height: 45px;
-        border-radius: 8px;
-        background: #f8fbff;
-        border: 1px solid #eef4ff;
-        color: #333;
-        font-weight: 500;
+      height: 45px;
+      border-radius: 8px;
+      background: #f8fbff;
+      border: 1px solid #eef4ff;
+      color: #333;
+      font-weight: 500;
     }
 
     .form-control:focus {
-        background: white;
-        border-color: #007bff;
-        box-shadow: none;
+      background: white;
+      border-color: #007bff;
+      box-shadow: none;
     }
 
     .form-control[readonly] {
-        background: #f0f0f0;
-        cursor: not-allowed;
+      background: #f0f0f0;
+      cursor: not-allowed;
     }
 
     /* ================= BUTTONS ================= */
 
     .btn-update {
-        background: #007bff;
-        color: white;
-        border: none;
-        padding: 12px 40px;
-        border-radius: 10px;
-        font-weight: bold;
-        transition: 0.3s;
+      background: #007bff;
+      color: white;
+      border: none;
+      padding: 12px 40px;
+      border-radius: 10px;
+      font-weight: bold;
+      transition: 0.3s;
     }
 
     .btn-update:hover {
-        background: #0056b3;
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(0, 123, 255, 0.3);
+      background: #0056b3;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 123, 255, 0.3);
     }
 
     /* ================= FOOTER ================= */
@@ -158,75 +165,78 @@
   <!-- ================= MAIN CONTENT ================= -->
 
   <div class="container main-container">
-      <div class="text-center mb-5">
-          <h1 class="fw-bold">Customer Profile Dossier</h1>
-          <p class="text-muted">Reviewing system record for @{{ user.username }}</p>
-      </div>
+    <div class="text-center mb-5">
+      <h1 class="fw-bold">Customer Profile Dossier</h1>
+      <p class="text-muted">Reviewing system record for @{{ user.username }}</p>
+    </div>
 
-      <div class="info-card">
-          <form method="POST">
-              
-              <!-- SECTION 1: SYSTEM IDENTITY -->
-              <div class="section-title">
-                  <i class="bi bi-cpu-fill"></i> System Identity
-              </div>
-              <div class="row g-4 mb-5">
-                  <div class="col-md-6">
-                      <label class="form-label">System Username</label>
-                      <input type="text" class="form-control" value="{{ user.username }}" readonly>
-                  </div>
-                  <div class="col-md-6">
-                      <label class="form-label">Account Number</label>
-                      <input type="text" class="form-control" name="accno" value="{{ user.account_number }}" placeholder="Acc Number">
-                  </div>
-              </div>
+    <div class="info-card">
+      <form method="POST">
 
-              <!-- SECTION 2: PERSONAL RECORDS -->
-              <div class="section-title">
-                  <i class="bi bi-person-badge"></i> Personal Records
-              </div>
-              <div class="row g-4 mb-5">
-                  <div class="col-md-12">
-                      <label class="form-label">Full Legal Name</label>
-                      <input type="text" class="form-control" name="name" value="{{ user.name }}" placeholder="Full Name">
-                  </div>
-                  <div class="col-md-6">
-                      <label class="form-label">Mobile Number</label>
-                      <input type="text" class="form-control" name="mobileno" value="{{ user.mobile_number }}" placeholder="Mobile">
-                  </div>
-                  <div class="col-md-6">
-                      <label class="form-label">Email Address</label>
-                      <input type="email" class="form-control" name="emailid" value="{{ user.email_id }}" placeholder="Email">
-                  </div>
-              </div>
+        <!-- SECTION 1: SYSTEM IDENTITY -->
+        <div class="section-title">
+          <i class="bi bi-cpu-fill"></i> System Identity
+        </div>
+        <div class="row g-4 mb-5">
+          <div class="col-md-6">
+            <label class="form-label">System Username</label>
+            <input type="text" class="form-control" value="{{ user.username }}" readonly>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Account Number</label>
+            <input type="text" class="form-control" name="accno" value="{{ user.account_number }}"
+              placeholder="Acc Number">
+          </div>
+        </div>
 
-              <!-- SECTION 3: SECURITY & BALANCES -->
-              <div class="section-title">
-                  <i class="bi bi-safe2"></i> Security & Financials
-              </div>
-              <div class="row g-4 mb-5">
-                  <div class="col-md-6">
-                      <label class="form-label">Assigned Card Number</label>
-                      <input type="text" class="form-control" name="cardno" value="{{ user.card_number }}" placeholder="Card #">
-                  </div>
-                  <div class="col-md-6">
-                      <label class="form-label">Current PIN</label>
-                      <input type="text" class="form-control" name="pin" value="{{ user.pin_no }}" placeholder="PIN">
-                  </div>
-                  <div class="col-md-6">
-                      <label class="form-label">Current Balance (₹)</label>
-                      <input type="text" class="form-control fw-bold text-success" name="amount" value="{{ user.amount }}" placeholder="Balance">
-                  </div>
-              </div>
+        <!-- SECTION 2: PERSONAL RECORDS -->
+        <div class="section-title">
+          <i class="bi bi-person-badge"></i> Personal Records
+        </div>
+        <div class="row g-4 mb-5">
+          <div class="col-md-12">
+            <label class="form-label">Full Legal Name</label>
+            <input type="text" class="form-control" name="name" value="{{ user.name }}" placeholder="Full Name">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Mobile Number</label>
+            <input type="text" class="form-control" name="mobileno" value="{{ user.mobile_number }}"
+              placeholder="Mobile">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Email Address</label>
+            <input type="email" class="form-control" name="emailid" value="{{ user.email_id }}" placeholder="Email">
+          </div>
+        </div>
 
-              <div class="text-center">
-                  <button type="submit" class="btn btn-update">
-                      <i class="bi bi-shield-check me-2"></i> Save Changes
-                  </button>
-              </div>
+        <!-- SECTION 3: SECURITY & BALANCES -->
+        <div class="section-title">
+          <i class="bi bi-safe2"></i> Security & Financials
+        </div>
+        <div class="row g-4 mb-5">
+          <div class="col-md-6">
+            <label class="form-label">Assigned Card Number</label>
+            <input type="text" class="form-control" name="cardno" value="{{ user.card_number }}" placeholder="Card #">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Current PIN</label>
+            <input type="text" class="form-control" name="pin" value="{{ user.pin_no }}" placeholder="PIN">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Current Balance (₹)</label>
+            <input type="text" class="form-control fw-bold text-success" name="amount" value="{{ user.amount }}"
+              placeholder="Balance">
+          </div>
+        </div>
 
-          </form>
-      </div>
+        <div class="text-center">
+          <button type="submit" class="btn btn-update">
+            <i class="bi bi-shield-check me-2"></i> Save Changes
+          </button>
+        </div>
+
+      </form>
+    </div>
   </div>
 
   <!-- ================= FOOTER ================= -->

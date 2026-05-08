@@ -119,8 +119,12 @@
             color: #6f42c1;
         }
 
-        .delete-icon {
-            color: #dc3545;
+        .loan-icon {
+            color: #20c997;
+        }
+
+        .fd-icon {
+            color: #0dcaf0;
         }
 
         /* ================= BUTTONS ================= */
@@ -220,7 +224,7 @@
 
                     <li>
 
-                        <a class="dropdown-item" href="{{ url_for('pinchange', username=ausername) }}">
+                        <a class="dropdown-item" href="{{ url_for('profile', username=ausername) }}#updateSettingsSection">
 
                             <i class="bi bi-gear me-2"></i>
                             Settings
@@ -385,7 +389,7 @@
                         Manage your debit card and ATM card settings.
                     </p>
 
-                    <a href="#" class="btn text-white" style="background-color:#6f42c1;">
+                    <a href="{{ url_for('card', username=ausername) }}" class="btn text-white" style="background-color:#6f42c1;">
 
                         Card Details
 
@@ -395,25 +399,51 @@
 
             </div>
 
-            <!-- Delete Account -->
+            <!-- Loan Services -->
 
             <div class="col-md-4">
 
                 <div class="dashboard-card">
 
-                    <div class="card-icon delete-icon">
-                        <i class="bi bi-trash3-fill"></i>
+                    <div class="card-icon loan-icon">
+                        <i class="bi bi-bank2"></i>
                     </div>
 
-                    <h5>Account Deletion</h5>
+                    <h5>Loan Services</h5>
 
                     <p>
-                        Permanently close your SecureTrust account.
+                        Apply and manage your personal and home loans.
                     </p>
 
-                    <a href="{{ url_for('deleteaccount', pusername=ausername) }}" class="btn btn-danger">
+                    <a href="{{ url_for('loan', username=ausername) }}" class="btn text-white" style="background-color:#20c997;">
 
-                        Delete Account
+                        Loan Services
+
+                    </a>
+
+                </div>
+
+            </div>
+
+            <!-- Fixed Deposit -->
+
+            <div class="col-md-4">
+
+                <div class="dashboard-card">
+
+                    <div class="card-icon fd-icon">
+                        <i class="bi bi-piggy-bank-fill"></i>
+                    </div>
+
+                    <h5>Fixed Deposit</h5>
+
+                    <p>
+                        Open FD accounts and earn high interest securely.
+                    </p>
+
+                    <a href="{{ url_for('fd', username=ausername) }}" class="btn text-white" style="background-color:#0dcaf0;">
+
+                        Open FD
 
                     </a>
 

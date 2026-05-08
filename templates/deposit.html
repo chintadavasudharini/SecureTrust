@@ -15,7 +15,7 @@
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(to right, #eef4ff, #f8fbff);
+      background: linear-gradient(to right, #e9f7ef, #f8fff9);
       min-height: 100vh;
     }
 
@@ -50,14 +50,14 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      min-height: 80vh;
+      min-height: 85vh;
       padding: 20px;
     }
 
     .form-container {
       background: white;
       width: 100%;
-      max-width: 450px;
+      max-width: 500px;
       padding: 40px;
       border-radius: 20px;
       box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
@@ -66,14 +66,8 @@
     }
 
     @keyframes fadeUp {
-      from {
-        opacity: 0;
-        transform: translateY(40px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      from { opacity: 0; transform: translateY(40px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     .form-container h3 {
@@ -86,7 +80,7 @@
     .form-control {
       height: 50px;
       border-radius: 10px;
-      margin-bottom: 10px;
+      margin-bottom: 18px;
     }
 
     .form-control:focus {
@@ -136,7 +130,7 @@
 
   <!-- ================= NAVBAR ================= -->
 
-  <nav class="navbar navbar-expand-lg">
+    <nav class="navbar navbar-expand-lg">
     <div class="container-fluid px-4">
       <a class="navbar-brand">
         <i class="bi bi-bank"></i>
@@ -151,70 +145,131 @@
 
         <!-- Profile Dropdown -->
         <div class="dropdown">
+
           <button class="btn btn-outline-primary dropdown-toggle profile-btn" type="button" id="profileDropdown"
             data-bs-toggle="dropdown">
+
             <i class="bi bi-person-circle"></i>
             {{ ausername }}
+
           </button>
+
           <ul class="dropdown-menu dropdown-menu-end shadow border-0">
+
             <li class="px-3 py-2">
-              <div class="fw-bold">{{ ausername }}</div>
-              <small class="text-muted">Secure Banking User</small>
+
+              <div class="fw-bold">
+                {{ ausername }}
+              </div>
+
+              <small class="text-muted">
+                Secure Banking User
+              </small>
+
             </li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" href="{{ url_for('profile', username=ausername) }}"><i
-                  class="bi bi-person me-2"></i>View Profile</a></li>
-            <li><a class="dropdown-item" href="{{ url_for('pinchange', username=ausername) }}"><i
-                  class="bi bi-gear me-2"></i>Settings</a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item text-danger" href="{{ url_for('logout') }}"><i
-                  class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
+
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+
+            <li>
+
+              <a class="dropdown-item" href="{{ url_for('profile', username=ausername) }}">
+
+                <i class="bi bi-person me-2"></i>
+                View Profile
+
+              </a>
+
+            </li>
+
+            <li>
+
+              <a class="dropdown-item" href="{{ url_for('profile', username=ausername) }}#updateSettingsSection">
+
+                <i class="bi bi-gear me-2"></i>
+                Settings
+
+              </a>
+
+            </li>
+
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+
+            <li>
+
+              <a class="dropdown-item text-danger" href="{{ url_for('logout') }}">
+
+                <i class="bi bi-box-arrow-right me-2"></i>
+                Logout
+
+              </a>
+
+            </li>
+
           </ul>
+
         </div>
       </div>
     </div>
   </nav>
 
-  <!-- Flash Messages -->
-  {% with messages = get_flashed_messages() %}
-    {% if messages %}
-      {% for message in messages %}
-        <div class="alert alert-info alert-dismissible fade show text-center mt-3 mx-auto w-75" role="alert">
-          {{ message }}
-          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-      {% endfor %}
-    {% endif %}
-  {% endwith %}
+  <!-- ================= FLASH MESSAGES ================= -->
 
-  <!-- ================= DEPOSIT SECTION ================= -->
+  <div class="container mt-3" style="max-width: 500px;">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    {% for category, message in messages %}
+    <div class="alert alert-{{ category }} alert-dismissible fade show shadow-sm" role="alert"
+      style="border-radius: 12px;">
+      <i class="bi bi-info-circle-fill me-2"></i>
+      {{ message }}
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+  </div>
+
+  <!-- ================= DEPOSIT FORM ================= -->
 
   <div class="form-wrapper">
-    <div class="form-container">
-      <h3>
-        <i class="bi bi-piggy-bank-fill me-2"></i>
-        Deposit Funds
-      </h3>
-      <p class="text-muted text-center mb-4">Add funds to your account instantly</p>
-      
-      <form method="POST">
-        <div class="mb-4">
-          <label for="damount" class="form-label fw-semibold">Amount (₹)</label>
-          <div class="input-group">
-            <span class="input-group-text bg-light border-end-0">
-              <i class="bi bi-currency-rupee"></i>
-            </span>
-            <input type="number" class="form-control border-start-0" id="damount" name="damount" placeholder="Enter amount to deposit"
-              required min="1">
+    <div class="text-center w-100" style="max-width: 500px;">
+      <div class="form-container">
+        <h3>
+          <i class="bi bi-cash-stack me-2"></i>
+          Deposit Funds
+        </h3>
+
+        <form action="{{ url_for('deposit', dusername=ausername) }}" method="POST">
+          <div class="mb-3 text-start">
+            <label class="form-label text-muted small fw-bold">YOUR ACCOUNT NUMBER</label>
+            <input type="text" class="form-control" value="{{ sender_accno }}" readonly>
           </div>
-          <small class="text-muted mt-2 d-block">Minimum deposit amount: ₹1</small>
-        </div>
-        
-        <button type="submit" class="btn btn-success btn-deposit">
-          <i class="bi bi-check-circle-fill me-2"></i>
-          Deposit Now
-        </button>
-      </form>
+
+          <div class="mb-4 text-start">
+            <label class="form-label text-muted small fw-bold">ENTER DEPOSIT AMOUNT (₹)</label>
+            <input type="number" name="amount" class="form-control" placeholder="0.00" required>
+            <small class="text-muted mt-2 d-block">Minimum deposit amount: ₹1</small>
+          </div>
+
+          <button type="submit" class="btn btn-success btn-deposit">
+            <i class="bi bi-plus-circle-fill me-2"></i>
+            Deposit Now
+          </button>
+        </form>
+      </div>
+
+      <!-- Back Button -->
+      <div class="mt-4 text-center">
+        <a href="{{ url_for('transaction', username=ausername) }}" class="btn btn-primary px-4 shadow-sm"
+          style="border-radius: 12px; font-weight: 600;">
+          <i class="bi bi-arrow-left me-2"></i>
+          Back to Transactions
+        </a>
+      </div>
     </div>
   </div>
 
@@ -228,4 +283,4 @@
 
 </body>
 
-</html>
+</html>

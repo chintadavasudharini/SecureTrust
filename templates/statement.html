@@ -19,34 +19,34 @@
     <style>
         body {
             font-family: 'Segoe UI', sans-serif;
-            background: linear-gradient(to right, #eef4ff, #f8fbff);
+            background: linear-gradient(to right, #fff9e6, #fffdf8);
             min-height: 100vh;
         }
 
         /* ================= NAVBAR ================= */
 
-        .navbar {
-            background: white;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
-            padding: 12px 0;
-        }
+    .navbar {
+      background: white;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+      padding: 12px 0;
+    }
 
-        .navbar-brand {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #007bff !important;
-        }
+    .navbar-brand {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #0d6efd !important;
+    }
 
-        .nav-link {
-            color: #007bff !important;
-            font-weight: 600;
-        }
+    .nav-link {
+      color: #0d6efd !important;
+      font-weight: 600;
+    }
 
-        .profile-btn {
-            border-radius: 30px;
-            font-weight: 600;
-            padding: 8px 20px;
-        }
+    .profile-btn {
+      border-radius: 30px;
+      font-weight: 600;
+      padding: 8px 20px;
+    }
 
         /* ================= CONTAINER ================= */
 
@@ -152,44 +152,91 @@
 
     <!-- ================= NAVBAR ================= -->
 
-    <nav class="navbar navbar-expand-lg">
-        <div class="container-fluid px-4">
-            <a class="navbar-brand">
-                <i class="bi bi-bank"></i>
-                SecureTrust
-            </a>
+      <nav class="navbar navbar-expand-lg">
+    <div class="container-fluid px-4">
+      <a class="navbar-brand">
+        <i class="bi bi-bank"></i>
+        SecureTrust
+      </a>
 
-            <div class="ms-auto d-flex align-items-center gap-3">
-                <a class="nav-link" href="{{ url_for('dashboard', pusername=ausername) }}">
-                    <i class="bi bi-grid-fill me-1"></i>
-                    Dashboard
-                </a>
+      <div class="ms-auto d-flex align-items-center gap-3">
+        <a class="nav-link" href="{{ url_for('dashboard', pusername=ausername) }}">
+          <i class="bi bi-grid-fill me-1"></i>
+          Dashboard
+        </a>
 
-                <!-- Profile Dropdown -->
-                <div class="dropdown">
-                    <button class="btn btn-outline-primary dropdown-toggle profile-btn" type="button" id="profileDropdown"
-                        data-bs-toggle="dropdown">
-                        <i class="bi bi-person-circle"></i>
-                        {{ ausername }}
-                    </button>
-                    <ul class="dropdown-menu dropdown-menu-end shadow border-0">
-                        <li class="px-3 py-2">
-                            <div class="fw-bold">{{ ausername }}</div>
-                            <small class="text-muted">Secure Banking User</small>
-                        </li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="{{ url_for('profile', username=ausername) }}"><i
-                                    class="bi bi-person me-2"></i>View Profile</a></li>
-                        <li><a class="dropdown-item" href="{{ url_for('pinchange', username=ausername) }}"><i
-                                    class="bi bi-gear me-2"></i>Settings</a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item text-danger" href="{{ url_for('logout') }}"><i
-                                    class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
-                    </ul>
-                </div>
-            </div>
+        <!-- Profile Dropdown -->
+        <div class="dropdown">
+
+          <button class="btn btn-outline-primary dropdown-toggle profile-btn" type="button" id="profileDropdown"
+            data-bs-toggle="dropdown">
+
+            <i class="bi bi-person-circle"></i>
+            {{ ausername }}
+
+          </button>
+
+          <ul class="dropdown-menu dropdown-menu-end shadow border-0">
+
+            <li class="px-3 py-2">
+
+              <div class="fw-bold">
+                {{ ausername }}
+              </div>
+
+              <small class="text-muted">
+                Secure Banking User
+              </small>
+
+            </li>
+
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+
+            <li>
+
+              <a class="dropdown-item" href="{{ url_for('profile', username=ausername) }}">
+
+                <i class="bi bi-person me-2"></i>
+                View Profile
+
+              </a>
+
+            </li>
+
+            <li>
+
+              <a class="dropdown-item" href="{{ url_for('profile', username=ausername) }}#updateSettingsSection">
+
+                <i class="bi bi-gear me-2"></i>
+                Settings
+
+              </a>
+
+            </li>
+
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+
+            <li>
+
+              <a class="dropdown-item text-danger" href="{{ url_for('logout') }}">
+
+                <i class="bi bi-box-arrow-right me-2"></i>
+                Logout
+
+              </a>
+
+            </li>
+
+          </ul>
+
         </div>
-    </nav>
+      </div>
+    </div>
+  </nav>
 
     <!-- ================= MAIN CONTENT ================= -->
 
@@ -201,14 +248,14 @@
 
         <!-- Control Panel -->
         <div class="control-panel">
-            <div class="row g-3">
-                <div class="col-lg-3 col-md-6">
+            <div class="row g-3 mb-3">
+                <div class="col-lg-4 col-md-6">
                     <button class="btn btn-success w-100" onclick="filterMini()">
                         <i class="bi bi-lightning-fill me-1"></i> Mini Statement
                     </button>
                 </div>
 
-                <div class="col-lg-3 col-md-6">
+                <div class="col-lg-4 col-md-6">
                     <div class="dropdown">
                         <button class="btn btn-primary w-100 dropdown-toggle" data-bs-toggle="dropdown">
                             <i class="bi bi-funnel-fill me-1"></i> Custom Filter
@@ -233,7 +280,7 @@
                     </div>
                 </div>
 
-                <div class="col-lg-4 col-md-8">
+                <div class="col-lg-4 col-md-12">
                     <div class="input-group">
                         <span class="input-group-text bg-white border-end-0">
                             <i class="bi bi-search text-muted"></i>
@@ -242,10 +289,13 @@
                             onkeyup="filterTable()">
                     </div>
                 </div>
+            </div>
 
-                <div class="col-lg-2 col-md-4">
+            <!-- PDF Download Section -->
+            <div class="row justify-content-center">
+                <div class="col-md-4">
                     <button class="btn btn-danger w-100" onclick="savePDF()">
-                        <i class="bi bi-file-earmark-pdf-fill me-1"></i> PDF
+                        <i class="bi bi-file-earmark-pdf-fill me-1"></i> Download PDF Statement
                     </button>
                 </div>
             </div>
@@ -391,4 +441,4 @@
 
 </body>
 
-</html>
+</html>

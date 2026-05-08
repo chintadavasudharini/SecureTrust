@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>Change Password | SecureTrust</title>
+  <title>Change Card PIN | SecureTrust</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <!-- Bootstrap -->
@@ -15,7 +15,7 @@
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(to right, #f0f0f0, #f8f9fa);
+      background: linear-gradient(to right, #e9f7ef, #f8fff9);
       min-height: 100vh;
     }
 
@@ -44,7 +44,7 @@
       padding: 8px 20px;
     }
 
-    /* ================= FORM SECTION ================= */
+    /* ================= FORM CONTAINER ================= */
 
     .form-wrapper {
       display: flex;
@@ -61,30 +61,21 @@
       padding: 40px;
       border-radius: 20px;
       box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
-      border-left: 6px solid #6c757d;
+      border-left: 6px solid #198754;
       animation: fadeUp 0.6s ease;
     }
 
     @keyframes fadeUp {
-      from {
-        opacity: 0;
-        transform: translateY(40px);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      from { opacity: 0; transform: translateY(40px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     .form-container h3 {
       margin-bottom: 25px;
       font-weight: bold;
-      color: #6c757d;
+      color: #198754;
       text-align: center;
     }
-
-    /* ================= INPUTS ================= */
 
     .form-control {
       height: 50px;
@@ -94,7 +85,7 @@
 
     .form-control:focus {
       box-shadow: none;
-      border-color: #6c757d;
+      border-color: #198754;
     }
 
     .input-group .form-control {
@@ -128,11 +119,30 @@
       font-weight: bold;
       font-size: 16px;
       transition: 0.3s;
+      background-color: #198754;
+      color: white;
+      border: none;
     }
 
     .btn-update:hover {
       transform: scale(1.02);
-      box-shadow: 0 5px 15px rgba(108, 117, 125, 0.3);
+      box-shadow: 0 5px 15px rgba(25, 135, 84, 0.3);
+      background-color: #157347;
+      color: white;
+    }
+
+    .btn-purple {
+      background-color: #9333ea;
+      color: white;
+    }
+
+    .btn-purple:hover {
+      background-color: #7e22ce;
+      color: white;
+    }
+
+    .text-purple {
+      color: #9333ea !important;
     }
 
     .btn-back {
@@ -158,7 +168,7 @@
 
   <!-- ================= NAVBAR ================= -->
 
-  <nav class="navbar navbar-expand-lg">
+    <nav class="navbar navbar-expand-lg">
     <div class="container-fluid px-4">
       <a class="navbar-brand">
         <i class="bi bi-bank"></i>
@@ -244,21 +254,7 @@
     </div>
   </nav>
 
-  <!-- Flash Messages -->
-  {% with messages = get_flashed_messages(with_categories=true) %}
-  {% if messages %}
-  {% for category, message in messages %}
-  <div
-    class="alert alert-{{ category if category != 'message' else 'info' }} alert-dismissible fade show text-center mt-3 mx-auto"
-    style="max-width: 500px;" role="alert">
-    {{ message }}
-    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-  </div>
-  {% endfor %}
-  {% endif %}
-  {% endwith %}
-
-  <!-- ================= CHANGE PASSWORD SECTION ================= -->
+  <!-- ================= CHANGE PIN SECTION ================= -->
 
   <div class="form-wrapper">
 
@@ -267,83 +263,223 @@
       <div class="form-container">
 
         <h3>
-          <i class="bi bi-key-fill me-2"></i>
-          Change Password
+
+          <i class="bi bi-shield-lock-fill me-2"></i>
+          Change Card PIN
+
         </h3>
 
         <form method="POST">
 
-          <!-- Email -->
+          <!-- Account Number -->
+
           <div class="mb-3">
-            <label class="form-label fw-semibold">Email Address</label>
-            <input type="email" class="form-control" name="email" placeholder="Enter your registered email" required>
+
+            <label class="form-label fw-semibold">
+              Account Number
+            </label>
+
+            <input type="text" class="form-control" name="accountnumber" placeholder="Enter account number" required>
+
           </div>
 
-          <!-- Current Password -->
+          <!-- Card Type -->
+
           <div class="mb-3">
-            <label class="form-label fw-semibold">Current Password</label>
+
+            <label class="form-label fw-semibold">
+              Card Type
+            </label>
+
+            <select class="form-select" name="cardtype" required>
+
+              <option value="">
+                Select Card Type
+              </option>
+
+              <option>
+                VISA Debit Card
+              </option>
+
+              <option>
+                MasterCard
+              </option>
+
+              <option>
+                RuPay Card
+              </option>
+
+            </select>
+
+          </div>
+
+          <!-- Card Number -->
+
+          <div class="mb-3">
+
+            <label class="form-label fw-semibold">
+              Card Number
+            </label>
+
+            <input type="text" class="form-control" name="cardnumber" placeholder="Enter card number" required>
+
+          </div>
+
+          <!-- Card Holder Name -->
+
+          <div class="mb-3">
+
+            <label class="form-label fw-semibold">
+              Card Holder Name
+            </label>
+
+            <input type="text" class="form-control" name="cardholder" placeholder="Enter card holder name" required>
+
+          </div>
+
+          <!-- Expiry -->
+
+          <div class="mb-3">
+
+            <label class="form-label fw-semibold">
+              Expiry Date
+            </label>
+
+            <input type="text" class="form-control" name="expiry" placeholder="MM/YY" required>
+
+          </div>
+
+          <!-- CVV -->
+
+          <div class="mb-3">
+
+            <label class="form-label fw-semibold">
+              CVV
+            </label>
+
+            <input type="password" class="form-control" name="cvv" placeholder="Enter CVV" maxlength="3"
+              pattern="[0-9]{3}" inputmode="numeric" oninput="this.value=this.value.replace(/[^0-9]/g,'')" required>
+
+          </div>
+
+          <!-- Current PIN -->
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Current PIN</label>
             <div class="input-group">
-              <input type="password" class="form-control" name="currentpassword" id="currentpassword" placeholder="Enter current password" required>
-              <button class="toggle-btn" type="button" onclick="togglePassword('currentpassword', this)">
+              <input type="password" class="form-control" name="currentpin" id="currentpin" placeholder="Enter current PIN" maxlength="4" pattern="[0-9]{4}" inputmode="numeric" oninput="this.value=this.value.replace(/[^0-9]/g,'')" required>
+              <button class="toggle-btn" type="button" onclick="togglePassword('currentpin', this)">
                 <i class="bi bi-eye"></i>
               </button>
             </div>
           </div>
 
-          <!-- New Password -->
+          <!-- New PIN -->
           <div class="mb-3">
-            <label class="form-label fw-semibold">New Password</label>
+            <label class="form-label fw-semibold">New PIN</label>
             <div class="input-group">
-              <input type="password" class="form-control" name="newpassword" id="newpassword" placeholder="Enter new password" required>
-              <button class="toggle-btn" type="button" onclick="togglePassword('newpassword', this)">
+              <input type="password" class="form-control" name="newpin" id="newpin" placeholder="Enter new PIN" maxlength="4" pattern="[0-9]{4}" inputmode="numeric" oninput="this.value=this.value.replace(/[^0-9]/g,'')" required>
+              <button class="toggle-btn" type="button" onclick="togglePassword('newpin', this)">
                 <i class="bi bi-eye"></i>
               </button>
             </div>
           </div>
 
-          <!-- Confirm Password -->
+          <!-- Confirm PIN -->
           <div class="mb-4">
-            <label class="form-label fw-semibold">Confirm Password</label>
+            <label class="form-label fw-semibold">Confirm PIN</label>
             <div class="input-group">
-              <input type="password" class="form-control" name="confirmpassword" id="confirmpassword" placeholder="Confirm new password" required>
-              <button class="toggle-btn" type="button" onclick="togglePassword('confirmpassword', this)">
+              <input type="password" class="form-control" name="confirmpin" id="confirmpin" placeholder="Confirm new PIN" maxlength="4" pattern="[0-9]{4}" inputmode="numeric" oninput="this.value=this.value.replace(/[^0-9]/g,'')" required>
+              <button class="toggle-btn" type="button" onclick="togglePassword('confirmpin', this)">
                 <i class="bi bi-eye"></i>
               </button>
             </div>
           </div>
 
           <!-- UPDATE BUTTON -->
-          <button type="button" class="btn btn-secondary btn-update" data-bs-toggle="modal"
+
+          <button type="button" class="btn btn-success btn-update" data-bs-toggle="modal"
             data-bs-target="#confirmModal">
+
             <i class="bi bi-check-circle-fill me-2"></i>
-            Update Password
+            Update PIN
+
           </button>
 
           <!-- ================= CONFIRM MODAL ================= -->
+
           <div class="modal fade" id="confirmModal" tabindex="-1">
+
             <div class="modal-dialog modal-dialog-centered">
+
               <div class="modal-content border-0 shadow-lg rounded-4">
+
+                <!-- Header -->
+
                 <div class="modal-header border-0 pb-0">
-                  <h5 class="modal-title text-secondary fw-bold">
+
+                  <h5 class="modal-title text-purple fw-bold">
+
                     <i class="bi bi-shield-check me-2"></i>
-                    Confirm Password Change
+                    Confirm PIN Update
+
                   </h5>
+
                   <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+
                 </div>
+
+                <!-- Body -->
+
                 <div class="modal-body text-center py-4">
+
                   <div class="mb-3">
-                    <i class="bi bi-key-fill text-secondary" style="font-size:70px;"></i>
+
+                    <i class="bi bi-key-fill text-purple" style="font-size:70px;"></i>
+
                   </div>
-                  <h4 class="fw-bold text-secondary mb-3">Are you sure!</h4>
-                  <p class="text-muted">Do you really want to change your account password?</p>
-                  <small class="text-secondary">Your security is our priority.</small>
+
+                  <h4 class="fw-bold text-purple mb-3">
+
+                    Are you sure!
+
+                  </h4>
+
+                  <p class="text-muted fs-6">
+
+                    Do you really want to update your card PIN?
+
+                  </p>
+
+                  <small class="text-purple">
+
+                    Your security is our priority.
+
+                  </small>
+
                 </div>
+
+                <!-- Footer -->
+
                 <div class="modal-footer border-0 justify-content-center pb-4">
-                  <button type="button" class="btn btn-light px-4" data-bs-dismiss="modal">Cancel</button>
-                  <button type="submit" class="btn btn-secondary px-4">Yes, Update Password</button>
+
+                  <button type="button" class="btn btn-light px-4" data-bs-dismiss="modal">
+
+                    Cancel
+
+                  </button>
+
+                  <button type="submit" class="btn btn-purple px-4">
+
+                    Yes, Update PIN
+
+                  </button>
+
                 </div>
+
               </div>
+
             </div>
+
           </div>
 
         </form>
@@ -351,11 +487,12 @@
       </div>
 
       <!-- ================= BACK BUTTON ================= -->
+
       <div class="mt-4 text-center">
-        <a href="{{ url_for('profile', username=ausername) }}" class="btn btn-primary px-4 shadow-sm"
+        <a href="{{ url_for('card', username=ausername) }}" class="btn btn-primary px-4 shadow-sm"
           style="border-radius: 12px; font-weight: 600;">
           <i class="bi bi-arrow-left me-2"></i>
-          Back to Profile
+          Back to Card Center
         </a>
       </div>
 
@@ -364,9 +501,17 @@
   </div>
 
   <!-- ================= FOOTER ================= -->
+
   <div class="footer">
-    <p>© 2026 SecureTrust Banking Services. All Rights Reserved.</p>
+
+    <p>
+      © 2026 SecureTrust Card Services.
+      All Rights Reserved.
+    </p>
+
   </div>
+
+  <!-- Bootstrap JS -->
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 

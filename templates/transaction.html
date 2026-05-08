@@ -4,6 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Transaction | SecureTrust</title>
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <!-- Bootstrap -->
@@ -15,7 +16,7 @@
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(to right, #eef4ff, #f8fbff);
+      background: linear-gradient(to right, #eefaf3, #f8fdfb);
       min-height: 100vh;
     }
 
@@ -48,24 +49,24 @@
 
     .title {
       text-align: center;
-      margin-top: 50px;
-      margin-bottom: 40px;
-
+      margin-top: 55px;
+      margin-bottom: 45px;
       animation: fadeDown 0.6s ease;
     }
 
     .title h2 {
       font-weight: bold;
-      color: #007bff;
+      color: #0d6efd;
+      font-size: 2.4rem;
     }
 
     .title p {
       color: #666;
       margin-top: 10px;
+      font-size: 1.05rem;
     }
 
     @keyframes fadeDown {
-
       from {
         opacity: 0;
         transform: translateY(-30px);
@@ -81,18 +82,13 @@
 
     .transaction-card {
       background: white;
-
-      border-radius: 20px;
-
-      padding: 35px 30px;
-
+      border-radius: 22px;
+      padding: 38px 30px;
       text-align: center;
-
       transition: 0.3s;
-
       box-shadow: 0 5px 20px rgba(0, 0, 0, 0.06);
-
       animation: fadeUp 0.7s ease;
+      height: 100%;
     }
 
     .transaction-card:hover {
@@ -101,7 +97,6 @@
     }
 
     @keyframes fadeUp {
-
       from {
         opacity: 0;
         transform: translateY(40px);
@@ -116,8 +111,8 @@
     /* ================= ICONS ================= */
 
     .transaction-icon {
-      font-size: 60px;
-      margin-bottom: 20px;
+      font-size: 65px;
+      margin-bottom: 22px;
     }
 
     .deposit-icon {
@@ -132,47 +127,86 @@
       color: #0d6efd;
     }
 
+    .otherbank-icon {
+      color: #9333ea;
+    }
+
+    .upi-icon {
+      color: #ff6b00;
+    }
+
     /* ================= CARD CONTENT ================= */
 
     .transaction-card h4 {
       font-weight: bold;
-      margin-bottom: 15px;
+      margin-bottom: 16px;
+      font-size: 1.9rem;
     }
 
     .transaction-card p {
       color: #666;
-      min-height: 55px;
-      line-height: 1.7;
+      min-height: 70px;
+      line-height: 1.8;
+      margin-bottom: 25px;
+      font-size: 1.02rem;
     }
 
     /* ================= BUTTONS ================= */
 
     .btn {
-      border-radius: 10px;
+      border-radius: 12px;
       font-weight: 600;
-      padding: 10px 18px;
+      padding: 12px 18px;
+      transition: 0.3s;
+      font-size: 1rem;
+    }
+
+    .btn-purple {
+      background: #9333ea;
+      color: white;
+      border: none;
+    }
+
+    .btn-purple:hover {
+      background: #7e22ce;
+      color: white;
+    }
+
+    .btn-orange {
+      background: #ff6b00;
+      color: white;
+      border: none;
+    }
+
+    .btn-orange:hover {
+      background: #e85f00;
+      color: white;
     }
 
     /* ================= FOOTER ================= */
 
     .footer {
       text-align: center;
-      margin-top: 50px;
-      padding: 20px;
+      margin-top: 60px;
+      padding: 25px;
       color: #666;
       font-size: 14px;
     }
 
     /* ================= RESPONSIVE ================= */
 
-    @media(max-width: 768px) {
+    @media(max-width:768px) {
 
       .title {
         margin-top: 35px;
       }
 
+      .title h2 {
+        font-size: 1.9rem;
+      }
+
       .transaction-card {
-        padding: 30px 25px;
+        padding: 30px 24px;
       }
     }
   </style>
@@ -182,26 +216,20 @@
 
   <!-- ================= NAVBAR ================= -->
 
-  <nav class="navbar navbar-expand-lg">
-
+    <nav class="navbar navbar-expand-lg">
     <div class="container-fluid px-4">
-
       <a class="navbar-brand">
         <i class="bi bi-bank"></i>
         SecureTrust
       </a>
 
       <div class="ms-auto d-flex align-items-center gap-3">
-
         <a class="nav-link" href="{{ url_for('dashboard', pusername=ausername) }}">
-
           <i class="bi bi-grid-fill me-1"></i>
           Dashboard
-
         </a>
 
         <!-- Profile Dropdown -->
-
         <div class="dropdown">
 
           <button class="btn btn-outline-primary dropdown-toggle profile-btn" type="button" id="profileDropdown"
@@ -243,7 +271,7 @@
 
             <li>
 
-              <a class="dropdown-item" href="{{ url_for('pinchange', username=ausername) }}">
+              <a class="dropdown-item" href="{{ url_for('profile', username=ausername) }}#updateSettingsSection">
 
                 <i class="bi bi-gear me-2"></i>
                 Settings
@@ -270,11 +298,8 @@
           </ul>
 
         </div>
-
       </div>
-
     </div>
-
   </nav>
 
   <!-- ================= PAGE TITLE ================= -->
@@ -292,7 +317,7 @@
 
   </div>
 
-  <!-- ================= TRANSACTION OPTIONS ================= -->
+  <!-- ================= TRANSACTION CARDS ================= -->
 
   <div class="container">
 
@@ -300,7 +325,7 @@
 
       <!-- Deposit -->
 
-      <div class="col-md-4">
+      <div class="col-lg-4 col-md-6">
 
         <div class="transaction-card">
 
@@ -328,7 +353,7 @@
 
       <!-- Withdraw -->
 
-      <div class="col-md-4">
+      <div class="col-lg-4 col-md-6">
 
         <div class="transaction-card">
 
@@ -354,27 +379,83 @@
 
       </div>
 
-      <!-- Transfer -->
+      <!-- Same Bank Transfer -->
 
-      <div class="col-md-4">
+      <div class="col-lg-4 col-md-6">
 
         <div class="transaction-card">
 
-          <div class="transaction-icon transfer-icon">
+          <div class="transaction-icon" style="color: #ffc107;">
 
             <i class="bi bi-arrow-left-right"></i>
 
           </div>
 
-          <h4>Transfer</h4>
+          <h4>Same Bank Transfer</h4>
 
           <p>
-            Send money instantly to another SecureTrust banking user.
+            Transfer money instantly between SecureTrust accounts safely.
           </p>
 
-          <a href="{{ url_for('transfer', username=ausername) }}" class="btn btn-primary w-100">
+          <a href="{{ url_for('transfer', username=ausername) }}" class="btn btn-warning w-100 text-white">
 
-            Transfer Funds
+            Transfer Now
+
+          </a>
+
+        </div>
+
+      </div>
+
+      <!-- Other Bank Transfer -->
+
+      <div class="col-lg-4 col-md-6">
+
+        <div class="transaction-card">
+
+          <div class="transaction-icon otherbank-icon" style="color: #ff6b00;">
+
+            <i class="bi bi-bank"></i>
+
+          </div>
+
+          <h4>Other Bank Transfer</h4>
+
+          <p>
+            Send funds securely to accounts in other banks using IFSC code.
+          </p>
+
+          <a href="{{ url_for('transfer2', username=ausername) }}" class="btn btn-orange w-100">
+
+            Send Money
+
+          </a>
+
+        </div>
+
+      </div>
+
+      <!-- UPI Transfer -->
+
+      <div class="col-lg-4 col-md-6">
+
+        <div class="transaction-card">
+
+          <div class="transaction-icon upi-icon" style="color: #9333ea;">
+
+            <i class="bi bi-phone"></i>
+
+          </div>
+
+          <h4>UPI Transfer</h4>
+
+          <p>
+            Transfer money instantly using UPI ID, mobile number or QR code.
+          </p>
+
+          <a href="{{ url_for('upitransfer', username=ausername) }}" class="btn btn-purple w-100">
+
+            Pay via UPI
 
           </a>
 
