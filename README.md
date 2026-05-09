@@ -7,7 +7,9 @@
 
 > **SecureTrust** is a sophisticated fintech simulation platform designed to demonstrate modern banking workflows, robust Role-Based Access Control (RBAC), and multi-channel financial transaction processing.
 >
-> 🚀 **[View the Development Roadmap](ROADMAP.md)**
+> 🚀 **[LIVE DEMO: SECURETRUST.ONRENDER.COM](https://securetrust.onrender.com/)**
+> 
+> 📑 **[View the Development Roadmap](ROADMAP.md)**
 
 ---
 
