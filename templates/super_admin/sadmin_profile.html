@@ -184,8 +184,8 @@
                     <ul class="dropdown-menu dropdown-menu-end shadow border-0">
                         <li class="px-3 py-2">
                             <div class="fw-bold">{{ admin }}</div>
-                            <small class="text-muted text-capitalize">
-                                {{ role.replace('_', ' ') }}
+                            <small class="text-muted">
+                                {{ session.get('role_display', role.replace('_', ' ')) }}
                             </small>
                         </li>
                         <li>
