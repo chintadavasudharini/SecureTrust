@@ -103,9 +103,15 @@ Contributions are what make the open source community such an amazing place to l
 Distributed under the MIT License. See `LICENSE` for more information.
 
 ## ✉️ Contact
-**Vasudharini** - [@v_sh_](https://twitter.com/v_sh_) - dev@securetrust.bank
+**Chintada Vasudharini**
+- **LinkedIn**: [chintada-vasudharini](https://www.linkedin.com/in/chintada-vasudharini-nov21/)
+- **Portfolio**: [portfolio-lime-tau-36.vercel.app](https://portfolio-lime-tau-36.vercel.app/)
+- **GitHub**: [chintadavasudharini](https://github.com/chintadavasudharini)
+- **Email**: [chintadavasudharini@gmail.com](mailto:chintadavasudharini@gmail.com)
 
 Project Link: [https://github.com/chintadavasudharini/SecureTrust](https://github.com/chintadavasudharini/SecureTrust)
 
 ---
+*Developed with ❤️ by Chintada Vasudharini*
+
 *Disclaimer: This is a simulation project. It is not intended for real financial transactions. Use for educational and demonstration purposes only.*
