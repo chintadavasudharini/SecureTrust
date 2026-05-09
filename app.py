@@ -6,56 +6,248 @@ app.secret_key = 'your_secret_key'  # For session encryption
 app.permanent_session_lifetime = timedelta(minutes=10)
 
 data = {}
-admin_data = {}
 
 @app.before_request
 def make_session_permanent():
     session.permanent = True
 
-    # -------------------- Admin Routes --------------------
+# =========================================================
+# ADMIN DATA
+# =========================================================
+
+admin_data = {
+    'admin': {
+        'fullname': 'Super Admin',
+        'uname': 'admin',
+        'password': 'admin123',
+        'email': 'superadmin@bank.com',
+        'role': 'super_admin',
+        'status': 'active'
+    }
+}
+
+
+# =========================================================
+# ADMIN HOME
+# =========================================================
 
 @app.route('/admin')
 def admin():
-    return render_template('admin_home.html')    
+    return render_template('auth/admin_home.html')
 
-@app.route('/admin/register', methods=['GET', 'POST'])
-def adminregister():
-    if request.method == 'POST':
-        uname = request.form.get('uname')
-        if uname not in admin_data:
-            admin_data[uname] = {
-                'password': request.form.get('password'),
-                'email': request.form.get('email')
-            }
-            return redirect(url_for('adminlogin'))
-        return 'Admin already exists'
-    return render_template('admin_register.html')
 
+
+# =========================================================
+# ADMIN LOGIN
+# =========================================================
 
 @app.route('/admin/login', methods=['GET', 'POST'])
 def adminlogin():
+
     if request.method == 'POST':
+
         uname = request.form.get('uname')
         password = request.form.get('password')
-        if uname in admin_data and admin_data[uname]['password'] == password:
-            session['admin'] = uname
-            return redirect(url_for('admin_dashboard'))
-        return 'Invalid admin credentials'
-    return render_template('admin_login.html')
 
+        if uname in admin_data:
+
+            admin = admin_data[uname]
+
+            if admin['password'] == password:
+
+                if admin.get('status') != 'active':
+                    return 'Admin account disabled'
+
+                session['admin'] = uname
+                session['role'] = admin.get('role')
+                session['admin_name'] = admin.get('fullname')
+
+                return redirect(url_for('sadmin_dashboard'))
+
+        flash('Invalid admin credentials')
+
+    return render_template('auth/admin_login.html')
+
+# =========================================================
+# ADMIN LOGOUT
+# =========================================================
+
+@app.route('/admin/logout')
+def admin_logout():
+
+    session.clear()
+
+    return redirect(url_for('adminlogin'))
+
+# =========================================================
+# ADMIN DASHBOARD
+# =========================================================
 
 @app.route('/admin/dashboard')
-def admin_dashboard():
+def sadmin_dashboard():
+
     if 'admin' not in session:
         return redirect(url_for('adminlogin'))
-    return render_template('admin_dashboard.html', admin=session['admin'])
+
+    total_users = len(data)
+    total_admins = len(admin_data)
+
+    total_balance = 0
+
+    for user in data.values():
+        total_balance += user.get('amount', 0)
+
+    return render_template(
+        'super_admin/sadmin_dashboard.html',
+        admin=session['admin'],
+        admin_name=session['admin_name'],
+        role=session['role'],
+        total_users=total_users,
+        total_admins=total_admins,
+        total_balance=total_balance
+    )
+
+# =========================================================
+# ADMIN PROFILE
+# =========================================================
+
+@app.route('/admin/profile')
+def sadmin_profile():
+
+    if 'admin' not in session:
+        return redirect(url_for('adminlogin'))
+
+    return render_template(
+        'super_admin/sadmin_profile.html',
+        admin=session['admin'],
+        admin_name=session['admin_name'],
+        role=session['role'],
+        email=admin_data[session['admin']]['email'],
+        last_login='Today, 10:30 PM'
+    )
+
+@app.route('/admin/add-admin', methods=['GET', 'POST'])
+def admin_addadmin():
+    if 'admin' not in session:
+        return redirect(url_for('adminlogin'))
+
+    # Strict Super Admin Check
+    if session.get('role') != 'super_admin':
+        flash("Unauthorized: Only Super Admins can add new administrators.")
+        return redirect(url_for('sadmin_dashboard'))
+
+    if request.method == 'POST':
+        fullname = request.form.get('fullname')
+        uname = request.form.get('uname')
+        email = request.form.get('email')
+        password = request.form.get('password')
+        role = request.form.get('role')
+
+        # Prevent Multiple Super Admins
+        if role == 'super_admin' and any(a.get('role') == 'super_admin' for a in admin_data.values()):
+            flash('A Super Admin already exists. There can only be one system authority.')
+            return redirect(url_for('admin_addadmin'))
+
+        if uname not in admin_data:
+            admin_data[uname] = {
+                'fullname': fullname,
+                'password': password,
+                'email': email,
+                'role': role,
+                'status': 'active'
+            }
+            flash(f'Administrator {uname} created successfully!')
+            return redirect(url_for('admin_viewadmins'))
+
+        flash('Admin username already exists!')
+
+    return render_template(
+        'super_admin/sadmin_addadmin.html',
+        admin=session['admin'],
+        role=session['role']
+    )
+
+
+@app.route('/admin/view-admins')
+def admin_viewadmins():
+    if 'admin' not in session:
+        return redirect(url_for('adminlogin'))
+
+    # Only Super Admin or Auditor Allowed
+    if session.get('role') not in ['super_admin', 'auditor']:
+        flash("Unauthorized access to admin directory.")
+        return redirect(url_for('sadmin_dashboard'))
+
+    admins_list = []
+    for uname, details in admin_data.items():
+        admins_list.append({
+            'username': uname,
+            'fullname': details.get('fullname', 'N/A'),
+            'email': details.get('email', 'N/A'),
+            'role': details.get('role', 'admin'),
+            'status': details.get('status', 'active')
+        })
+
+    return render_template(
+        'super_admin/sadmin_viewalladmins.html',
+        admin=session['admin'],
+        role=session['role'],
+        admins_list=admins_list
+    )
+
+
+@app.route('/admin/delete-admin/<username>')
+def delete_admin(username):
+    if 'admin' not in session:
+        return redirect(url_for('adminlogin'))
+
+    if session.get('role') != 'super_admin':
+        flash("Unauthorized action.")
+        return redirect(url_for('sadmin_dashboard'))
+
+    if username == 'admin': # Protect the root admin
+        flash('Root Super Admin cannot be deleted')
+        return redirect(url_for('admin_viewadmins'))
+
+    if username in admin_data:
+        del admin_data[username]
+        flash('Admin deleted successfully')
+    return redirect(url_for('admin_viewadmins'))
+
+
+@app.route('/admin/disable-admin/<username>')
+def disable_admin(username):
+    if 'admin' not in session:
+        return redirect(url_for('adminlogin'))
+
+    if session.get('role') != 'super_admin':
+        flash("Unauthorized action.")
+        return redirect(url_for('sadmin_dashboard'))
+
+    if username == 'admin':
+        flash('Root Super Admin cannot be disabled')
+        return redirect(url_for('admin_viewadmins'))
+
+    if username in admin_data:
+        current_status = admin_data[username].get('status')
+        admin_data[username]['status'] = 'disabled' if current_status == 'active' else 'active'
+        flash(f"Admin {admin_data[username]['status']} successfully")
+
+    return redirect(url_for('admin_viewadmins'))
 
 
 @app.route('/admin/viewallusers')
 def admin_view_users():
     if 'admin' not in session:
         return redirect(url_for('adminlogin'))
-    return render_template('admin_viewallusers.html', admin=session['admin'], users=[
+    
+    # Restricted roles for user viewing
+    allowed_roles = ['super_admin', 'customer_onboarding_admin', 'account_closure_admin', 'customer_support_admin', 'transaction_manager', 'auditor']
+    if session.get('role') not in allowed_roles:
+        flash("Access Denied to User Directory.")
+        return redirect(url_for('sadmin_dashboard'))
+
+    return render_template('onboarding/admin_viewallusers.html', admin=session['admin'], role=session.get('role'), users=[
         {'username': uname, 'fullname': details['name'], 'account_number': details['account_number']}
         for uname, details in data.items()
     ])
@@ -65,14 +257,14 @@ def admin_view_users():
 def admin_user_info(username):
     if 'admin' not in session:
         return redirect(url_for('adminlogin'))
-    return render_template('admin_viewuserinfo.html', user=data[username], ausername=username)
+    return render_template('onboarding/admin_viewuserinfo.html', user=data[username], ausername=username)
 
 
 @app.route('/admin/user/<username>/transactions')
 def admin_user_transactions(username):
     if 'admin' not in session:
         return redirect(url_for('adminlogin'))
-    return render_template('admin_userstament.html', 
+    return render_template('audit/admin_userstament.html', 
                            username=username, 
                            admin=session['admin'],
                            transactions=reversed(data[username]['transactions']))
@@ -83,21 +275,24 @@ def admin_add_user():
     if 'admin' not in session:
         return redirect(url_for('adminlogin'))
     
+    if session.get('role') not in ['super_admin', 'customer_onboarding_admin']:
+        flash("Access Denied: You do not have permission to enroll new users.")
+        return redirect(url_for('sadmin_dashboard'))
+
     if request.method == 'POST':
+        # (Existing logic...)
         name = request.form.get('name')
         accno = request.form.get('accno')
         mobile = request.form.get('mobileno')
         email = request.form.get('emailid')
         initial_deposit = int(request.form.get('initial_deposit', 500))
-        
-        # Use name as username for simplicity or generate one
         username = name.lower().replace(" ", "")
         
         if username not in data:
             data[username] = {
                 'name': name,
                 'account_number': accno,
-                'password': 'password123', # Default password for new users
+                'password': 'password123',
                 'card_number': 'ST' + accno[-4:], 
                 'pin_no': '1234',
                 'mobile_number': mobile,
@@ -115,7 +310,7 @@ def admin_add_user():
         else:
             flash('User already exists.')
             
-    return render_template('admin_adduser.html', admin=session['admin'])
+    return render_template('onboarding/admin_adduser.html', admin=session['admin'], role=session.get('role'))
 
 
 @app.route('/admin/profile/<admin>')
@@ -126,6 +321,48 @@ def admin_profile(admin):
 @app.route('/admin/settings/<admin>')
 def admin_settings(admin):
     return f"Admin Settings for {admin} (add template if needed)"
+
+# ================= CUSTOMER SUPPORT =================
+@app.route('/admin/support/tickets')
+def support_tickets():
+    if 'admin' not in session: return redirect(url_for('adminlogin'))
+    return render_template('support/support_tickets.html', admin=session['admin'], role=session['role'])
+
+# ================= ACCOUNT CLOSURE =================
+@app.route('/admin/closure/requests')
+def closure_requests():
+    if 'admin' not in session: return redirect(url_for('adminlogin'))
+    return render_template('account_closure/delete_requests.html', admin=session['admin'], role=session['role'])
+
+# ================= CARD OPERATIONS =================
+@app.route('/admin/cards/management')
+def card_management():
+    if 'admin' not in session: return redirect(url_for('adminlogin'))
+    return render_template('cards/card_management.html', admin=session['admin'], role=session['role'])
+
+# ================= LOAN OPERATIONS =================
+@app.route('/admin/loans/desk')
+def loan_desk():
+    if 'admin' not in session: return redirect(url_for('adminlogin'))
+    return render_template('loans/loan_requests.html', admin=session['admin'], role=session['role'])
+
+# ================= FD OPERATIONS =================
+@app.route('/admin/fd/management')
+def fd_management_admin():
+    if 'admin' not in session: return redirect(url_for('adminlogin'))
+    return render_template('fd/fd_requests.html', admin=session['admin'], role=session['role'])
+
+# ================= TRANSACTION MONITORING =================
+@app.route('/admin/transactions/monitor')
+def transaction_monitor():
+    if 'admin' not in session: return redirect(url_for('adminlogin'))
+    return render_template('transactions/transaction_monitoring.html', admin=session['admin'], role=session['role'])
+
+# ================= AUDIT & ANALYTICS =================
+@app.route('/admin/audit/reports')
+def audit_reports():
+    if 'admin' not in session: return redirect(url_for('adminlogin'))
+    return render_template('audit/reports_dashboard.html', admin=session['admin'], role=session['role'])
 
 # -------------------- User Routes --------------------
 

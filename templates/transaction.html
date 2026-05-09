@@ -82,8 +82,8 @@
 
     .transaction-card {
       background: white;
-      border-radius: 22px;
-      padding: 38px 30px;
+      border-radius: 20px;
+      padding: 35px 30px;
       text-align: center;
       transition: 0.3s;
       box-shadow: 0 5px 20px rgba(0, 0, 0, 0.06);
@@ -111,8 +111,8 @@
     /* ================= ICONS ================= */
 
     .transaction-icon {
-      font-size: 65px;
-      margin-bottom: 22px;
+      font-size: 60px;
+      margin-bottom: 20px;
     }
 
     .deposit-icon {
@@ -139,14 +139,15 @@
 
     .transaction-card h4 {
       font-weight: bold;
-      margin-bottom: 16px;
-      font-size: 1.9rem;
+      margin-bottom: 20px;
+      font-size: 1.8rem;
+      color: #333;
     }
 
     .transaction-card p {
       color: #666;
-      min-height: 70px;
-      line-height: 1.8;
+      min-height: 60px;
+      line-height: 1.7;
       margin-bottom: 25px;
       font-size: 1.02rem;
     }
@@ -154,9 +155,9 @@
     /* ================= BUTTONS ================= */
 
     .btn {
-      border-radius: 12px;
+      border-radius: 10px;
       font-weight: 600;
-      padding: 12px 18px;
+      padding: 10px 18px;
       transition: 0.3s;
       font-size: 1rem;
     }
@@ -172,6 +173,17 @@
       color: white;
     }
 
+    .btn-outline-purple {
+      color: #9333ea;
+      border: 1px solid #9333ea;
+      background: transparent;
+    }
+
+    .btn-outline-purple:hover {
+      background: #9333ea;
+      color: white;
+    }
+
     .btn-orange {
       background: #ff6b00;
       color: white;
@@ -180,6 +192,17 @@
 
     .btn-orange:hover {
       background: #e85f00;
+      color: white;
+    }
+
+    .btn-outline-orange {
+      color: #ff6b00;
+      border: 1px solid #ff6b00;
+      background: transparent;
+    }
+
+    .btn-outline-orange:hover {
+      background: #ff6b00;
       color: white;
     }
 
@@ -341,126 +364,56 @@
             Add funds to your SecureTrust account instantly and securely.
           </p>
 
-          <a href="{{ url_for('deposit', dusername=ausername) }}" class="btn btn-success w-100">
-
-            Deposit Now
-
-          </a>
-
+          <a href="{{ url_for('deposit', dusername=ausername) }}" class="btn btn-outline-success w-100">Deposit Now</a>
         </div>
-
       </div>
 
       <!-- Withdraw -->
-
-      <div class="col-lg-4 col-md-6">
-
+      <div class="col-md-4">
         <div class="transaction-card">
-
           <div class="transaction-icon withdraw-icon">
-
-            <i class="bi bi-bank2"></i>
-
+            <i class="bi bi-cash-stack"></i>
           </div>
-
           <h4>Withdraw</h4>
-
-          <p>
-            Withdraw funds safely while maintaining your minimum balance.
-          </p>
-
-          <a href="{{ url_for('withdraw', wusername=ausername) }}" class="btn btn-danger w-100">
-
-            Withdraw Now
-
-          </a>
-
+          <p>Securely withdraw funds from your savings account instantly.</p>
+          <a href="{{ url_for('withdraw', wusername=ausername) }}" class="btn btn-outline-danger w-100">Withdraw Now</a>
         </div>
-
       </div>
 
-      <!-- Same Bank Transfer -->
-
-      <div class="col-lg-4 col-md-6">
-
+      <!-- Transfer -->
+      <div class="col-md-4">
         <div class="transaction-card">
-
-          <div class="transaction-icon" style="color: #ffc107;">
-
+          <div class="transaction-icon transfer-icon">
             <i class="bi bi-arrow-left-right"></i>
-
           </div>
-
-          <h4>Same Bank Transfer</h4>
-
-          <p>
-            Transfer money instantly between SecureTrust accounts safely.
-          </p>
-
-          <a href="{{ url_for('transfer', username=ausername) }}" class="btn btn-warning w-100 text-white">
-
-            Transfer Now
-
-          </a>
-
+          <h4>Transfer</h4>
+          <p>Transfer money to other SecureTrust accounts within seconds.</p>
+          <a href="{{ url_for('transfer', username=ausername) }}" class="btn btn-outline-primary w-100">Transfer Now</a>
         </div>
-
       </div>
 
-      <!-- Other Bank Transfer -->
-
-      <div class="col-lg-4 col-md-6">
-
+      <!-- Other Bank -->
+      <div class="col-md-4">
         <div class="transaction-card">
-
-          <div class="transaction-icon otherbank-icon" style="color: #ff6b00;">
-
+          <div class="transaction-icon otherbank-icon">
             <i class="bi bi-bank"></i>
-
           </div>
-
-          <h4>Other Bank Transfer</h4>
-
-          <p>
-            Send funds securely to accounts in other banks using IFSC code.
-          </p>
-
-          <a href="{{ url_for('transfer2', username=ausername) }}" class="btn btn-orange w-100">
-
-            Send Money
-
-          </a>
-
+          <h4>Other Bank</h4>
+          <p>Send funds to any other bank account using IMPS/NEFT services.</p>
+          <a href="{{ url_for('transfer2', username=ausername) }}" class="btn btn-outline-purple w-100">Other Bank</a>
         </div>
-
       </div>
 
-      <!-- UPI Transfer -->
-
-      <div class="col-lg-4 col-md-6">
-
+      <!-- UPI Payment -->
+      <div class="col-md-4">
         <div class="transaction-card">
-
-          <div class="transaction-icon upi-icon" style="color: #9333ea;">
-
-            <i class="bi bi-phone"></i>
-
+          <div class="transaction-icon upi-icon">
+            <i class="bi bi-qr-code-scan"></i>
           </div>
-
-          <h4>UPI Transfer</h4>
-
-          <p>
-            Transfer money instantly using UPI ID, mobile number or QR code.
-          </p>
-
-          <a href="{{ url_for('upitransfer', username=ausername) }}" class="btn btn-purple w-100">
-
-            Pay via UPI
-
-          </a>
-
+          <h4>UPI Payment</h4>
+          <p>Quick payments via VPA or QR code scanning for daily needs.</p>
+          <a href="{{ url_for('upitransfer', username=ausername) }}" class="btn btn-outline-orange w-100">UPI Payment</a>
         </div>
-
       </div>
 
     </div>
