@@ -16,16 +16,24 @@ def make_session_permanent():
 # =========================================================
 
 admin_data = {
-    'admin': {
-        'fullname': 'Super Admin',
-        'uname': 'admin',
-        'password': 'admin123',
-        'email': 'superadmin@bank.com',
-        'role': 'super_admin',
-        'status': 'active'
-    }
-}
 
+    'super_admin': {
+
+        'fullname': 'Vasudharini',
+
+        'password': 'superadmin',
+
+        'email': 'superadmin@bank.com',
+
+        'role': 'super_admin',
+
+        'role_display': 'Supreme Administrator',
+
+        'status': 'active'
+
+    }
+
+}
 
 # =========================================================
 # ADMIN HOME
@@ -61,6 +69,7 @@ def adminlogin():
                 session['admin'] = uname
                 session['role'] = admin.get('role')
                 session['admin_name'] = admin.get('fullname')
+                session['role_display'] = admin.get('role_display', admin.get('role').replace('_', ' '))
 
                 return redirect(url_for('sadmin_dashboard'))
 
@@ -205,7 +214,7 @@ def delete_admin(username):
         flash("Unauthorized action.")
         return redirect(url_for('sadmin_dashboard'))
 
-    if username == 'admin': # Protect the root admin
+    if username == 'super_admin': # Protect the root admin
         flash('Root Super Admin cannot be deleted')
         return redirect(url_for('admin_viewadmins'))
 
@@ -224,7 +233,7 @@ def disable_admin(username):
         flash("Unauthorized action.")
         return redirect(url_for('sadmin_dashboard'))
 
-    if username == 'admin':
+    if username == 'super_admin':
         flash('Root Super Admin cannot be disabled')
         return redirect(url_for('admin_viewadmins'))
 
@@ -466,7 +475,7 @@ def deposit(dusername):
         return redirect(url_for('login'))
 
     if request.method == 'POST':
-        udamount = int(request.form.get('damount'))
+        udamount = int(request.form.get('amount'))
         if udamount <= 0:
             flash("Invalid Amount")
         elif udamount > 100000:
@@ -499,7 +508,7 @@ def withdraw(wusername):
     current_balance = data[wusername]['amount']
 
     if request.method == 'POST':
-        uwamount = int(request.form.get('wamount'))
+        uwamount = int(request.form.get('amount'))
         if uwamount <= 0:
             flash("Amount must be greater than 0")
         elif uwamount > current_balance:
