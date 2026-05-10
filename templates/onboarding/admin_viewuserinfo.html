@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>User Dossier | SecureTrust Admin</title>
+  <title>Customer Dossier | SecureTrust Admin</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <!-- Bootstrap -->
@@ -13,6 +13,13 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
 
   <style>
+    :root {
+      --super-admin: #111827;
+      --admin-blue: #2563EB;
+      --customer-green: #16A34A;
+      --directory-blue: #0D6EFD;
+    }
+
     body {
       font-family: 'Segoe UI', sans-serif;
       background: linear-gradient(to right, #eef4ff, #f8fbff);
@@ -23,30 +30,54 @@
 
     .navbar {
       background: white;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
       padding: 12px 0;
     }
 
     .navbar-brand {
+      color: #0d6efd !important;
       font-size: 1.5rem;
-      font-weight: bold;
-      color: #007bff !important;
+      font-weight: 700;
     }
 
-    .nav-link {
-      color: #007bff !important;
-      font-weight: 600;
+    /* ================= HEADER ================= */
+
+    .page-header {
+      padding: 60px 0 20px;
+      text-align: center;
     }
 
-    /* ================= CONTAINER ================= */
-
-    .main-container {
-      margin: 50px auto;
-      max-width: 900px;
-      animation: fadeUp 0.6s ease;
+    .header-icon {
+      font-size: 50px;
+      color: #0d6efd;
+      margin-bottom: 15px;
+      display: block;
     }
 
-    @keyframes fadeUp {
+    .page-header h3 {
+      font-weight: 800;
+      color: #333;
+    }
+
+    /* ================= FORM CARD ================= */
+
+    .form-wrapper {
+      padding: 0 20px 60px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .form-card {
+      background: white;
+      border-radius: 25px;
+      padding: 40px;
+      width: 100%;
+      max-width: 800px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
+      animation: slideUp 0.6s ease-out;
+    }
+
+    @keyframes slideUp {
       from {
         opacity: 0;
         transform: translateY(30px);
@@ -58,81 +89,68 @@
       }
     }
 
-    .info-card {
-      background: white;
-      border-radius: 20px;
-      padding: 40px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-      border-top: 6px solid #007bff;
-      margin-bottom: 30px;
-    }
-
     .section-title {
       font-weight: 800;
       text-transform: uppercase;
-      font-size: 14px;
+      font-size: 13px;
       letter-spacing: 1px;
-      color: #007bff;
+      color: #0d6efd;
       margin-bottom: 25px;
       padding-bottom: 10px;
-      border-bottom: 2px solid #eef4ff;
+      border-bottom: 2px solid #f8fbff;
       display: flex;
       align-items: center;
       gap: 10px;
     }
 
-    /* ================= FORM STYLING ================= */
-
     .form-label {
       font-weight: 600;
-      color: #666;
-      font-size: 14px;
+      color: #555;
+      margin-left: 5px;
     }
 
     .form-control {
-      height: 45px;
-      border-radius: 8px;
-      background: #f8fbff;
+      border-radius: 12px;
+      padding: 12px 15px;
       border: 1px solid #eef4ff;
-      color: #333;
-      font-weight: 500;
+      background: #f8fbff;
+      transition: 0.3s;
     }
 
     .form-control:focus {
       background: white;
-      border-color: #007bff;
-      box-shadow: none;
+      border-color: #0d6efd;
+      box-shadow: 0 0 0 4px rgba(13, 110, 253, 0.1);
     }
 
     .form-control[readonly] {
-      background: #f0f0f0;
+      background: #f1f5f9;
       cursor: not-allowed;
+      border-style: dashed;
     }
 
-    /* ================= BUTTONS ================= */
-
-    .btn-update {
-      background: #007bff;
+    .btn-submit {
+      background: #0d6efd;
       color: white;
       border: none;
-      padding: 12px 40px;
-      border-radius: 10px;
-      font-weight: bold;
+      padding: 14px;
+      border-radius: 12px;
+      font-weight: 700;
+      width: 100%;
       transition: 0.3s;
+      margin-top: 20px;
     }
 
-    .btn-update:hover {
-      background: #0056b3;
+    .btn-submit:hover {
+      background: #0b5ed7;
       transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(0, 123, 255, 0.3);
+      box-shadow: 0 8px 20px rgba(13, 110, 253, 0.2);
     }
-
-    /* ================= FOOTER ================= */
 
     .footer {
       text-align: center;
-      padding: 30px;
-      color: #666;
+      padding: 40px;
+      color: #6c757d;
       font-size: 14px;
     }
   </style>
@@ -140,113 +158,162 @@
 
 <body>
 
-  <!-- ================= NAVBAR ================= -->
-
   <nav class="navbar navbar-expand-lg">
     <div class="container-fluid px-4">
-      <a class="navbar-brand">
-        <i class="bi bi-shield-lock-fill me-2"></i>
+      <a class="navbar-brand" href="{{ url_for('sadmin_dashboard') }}">
+        <i class="bi bi-bank"></i>
         SecureTrust Admin
       </a>
 
       <div class="ms-auto d-flex align-items-center gap-3">
-        <a class="nav-link" href="{{ url_for('sadmin_dashboard') }}">
-          <i class="bi bi-speedometer2 me-1"></i>
-          Dashboard
+        <a class="nav-link text-primary fw-bold text-decoration-none" href="{{ url_for('sadmin_dashboard') }}">
+          <i class="bi bi-grid-fill me-1"></i> Dashboard
         </a>
-        <a class="nav-link" href="{{ url_for('admin_view_users') }}">
-          <i class="bi bi-people me-1"></i>
-          Users
-        </a>
+
+        <!-- Profile Dropdown -->
+        <div class="dropdown">
+          <button class="btn btn-outline-primary dropdown-toggle rounded-pill px-4" type="button"
+            data-bs-toggle="dropdown">
+            <i class="bi bi-person-circle me-1"></i>
+            {{ admin }}
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end shadow border-0">
+            <li class="px-3 py-2">
+              <div class="fw-bold">{{ admin }}</div>
+              <small class="text-muted text-capitalize">{{ role.replace('_', ' ') }}</small>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+            <li><a class="dropdown-item" href="{{ url_for('sadmin_profile') }}"><i
+                  class="bi bi-person-badge me-2"></i>Profile</a></li>
+            <li><a class="dropdown-item" href="{{ url_for('sadmin_dashboard') }}"><i
+                  class="bi bi-speedometer2 me-2"></i>Dashboard</a></li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+            <li><a class="dropdown-item text-danger" href="{{ url_for('logout') }}"><i
+                  class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
+          </ul>
+        </div>
       </div>
     </div>
   </nav>
 
-  <!-- ================= MAIN CONTENT ================= -->
-
-  <div class="container main-container">
-    <div class="text-center mb-5">
-      <h1 class="fw-bold">Customer Profile Dossier</h1>
-      <p class="text-muted">Reviewing system record for @{{ user.username }}</p>
+  <!-- ================= HEADER SECTION ================= -->
+  <div class="page-header">
+    <i class="bi bi-person-badge-fill header-icon"></i>
+    <h3>Customer Dossier</h3>
+    <p class="text-muted">Reviewing system records for @{{ ausername }}</p>
+    <div class="mt-3">
+      <a href="{{ url_for('admin_view_users') }}"
+        class="btn btn-outline-primary px-4 py-2 rounded-pill shadow-sm fw-bold">
+        <i class="bi bi-people-fill me-2"></i> User Directory
+      </a>
     </div>
+  </div>
 
-    <div class="info-card">
+  <!-- ================= FORM SECTION ================= -->
+  <div class="form-wrapper">
+    <div class="form-card">
       <form method="POST">
 
-        <!-- SECTION 1: SYSTEM IDENTITY -->
+        <!-- System Identity -->
         <div class="section-title">
           <i class="bi bi-cpu-fill"></i> System Identity
         </div>
         <div class="row g-4 mb-5">
           <div class="col-md-6">
-            <label class="form-label">System Username</label>
-            <input type="text" class="form-control" value="{{ user.username }}" readonly>
+            <label class="form-label">Username</label>
+            <input type="text" class="form-control" value="{{ ausername }}" readonly>
           </div>
           <div class="col-md-6">
             <label class="form-label">Account Number</label>
-            <input type="text" class="form-control" name="accno" value="{{ user.account_number }}"
-              placeholder="Acc Number">
+            <input type="text" class="form-control" name="accno" value="{{ user.account_number }}" required>
           </div>
         </div>
 
-        <!-- SECTION 2: PERSONAL RECORDS -->
+        <!-- Personal Information -->
         <div class="section-title">
-          <i class="bi bi-person-badge"></i> Personal Records
+          <i class="bi bi-person-vcard-fill"></i> Personal Information
         </div>
         <div class="row g-4 mb-5">
-          <div class="col-md-12">
+          <div class="col-12">
             <label class="form-label">Full Legal Name</label>
-            <input type="text" class="form-control" name="name" value="{{ user.name }}" placeholder="Full Name">
+            <input type="text" class="form-control" name="name" value="{{ user.name }}" required>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Date of Birth</label>
+            <input type="date" class="form-control" name="dob" value="{{ user.dob }}" required>
           </div>
           <div class="col-md-6">
             <label class="form-label">Mobile Number</label>
-            <input type="text" class="form-control" name="mobileno" value="{{ user.mobile_number }}"
-              placeholder="Mobile">
+            <input type="text" class="form-control" name="mobileno" value="{{ user.mobile_number }}" required>
+          </div>
+          <div class="col-md-12">
+            <label class="form-label">Email Address</label>
+            <input type="email" class="form-control" name="emailid" value="{{ user.email_id }}" required>
           </div>
           <div class="col-md-6">
-            <label class="form-label">Email Address</label>
-            <input type="email" class="form-control" name="emailid" value="{{ user.email_id }}" placeholder="Email">
+            <label class="form-label">City</label>
+            <input type="text" class="form-control" name="city" value="{{ user.city }}" required>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">State</label>
+            <input type="text" class="form-control" name="state" value="{{ user.state }}" required>
           </div>
         </div>
 
-        <!-- SECTION 3: SECURITY & BALANCES -->
+        <!-- KYC Documents -->
         <div class="section-title">
-          <i class="bi bi-safe2"></i> Security & Financials
+          <i class="bi bi-file-earmark-check-fill"></i> KYC Documents
+        </div>
+        <div class="row g-4 mb-5">
+          <div class="col-md-6">
+            <label class="form-label">Aadhaar Number</label>
+            <input type="text" class="form-control" name="aadharno" value="{{ user.aadharno }}" required>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">PAN Number</label>
+            <input type="text" class="form-control" name="panno" value="{{ user.panno }}" required>
+          </div>
+        </div>
+
+        <!-- Security & Financials -->
+        <div class="section-title">
+          <i class="bi bi-safe2-fill"></i> Security & Financials
         </div>
         <div class="row g-4 mb-5">
           <div class="col-md-6">
             <label class="form-label">Assigned Card Number</label>
-            <input type="text" class="form-control" name="cardno" value="{{ user.card_number }}" placeholder="Card #">
+            <input type="text" class="form-control" name="cardno" value="{{ user.card_number }}" required>
           </div>
           <div class="col-md-6">
             <label class="form-label">Current PIN</label>
-            <input type="text" class="form-control" name="pin" value="{{ user.pin_no }}" placeholder="PIN">
+            <input type="text" class="form-control" name="pin" value="{{ user.pin_no }}" required>
           </div>
-          <div class="col-md-6">
+          <div class="col-md-12">
             <label class="form-label">Current Balance (₹)</label>
-            <input type="text" class="form-control fw-bold text-success" name="amount" value="{{ user.amount }}"
-              placeholder="Balance">
+            <div class="input-group">
+              <span class="input-group-text bg-light border-0">₹</span>
+              <input type="number" class="form-control fw-bold text-success" name="amount" value="{{ user.amount }}"
+                required>
+            </div>
           </div>
         </div>
 
-        <div class="text-center">
-          <button type="submit" class="btn btn-update">
-            <i class="bi bi-shield-check me-2"></i> Save Changes
-          </button>
-        </div>
-
+        <button type="submit" class="btn btn-submit">
+          <i class="bi bi-shield-check me-2"></i> Update Records
+        </button>
       </form>
     </div>
   </div>
 
-  <!-- ================= FOOTER ================= -->
-
   <div class="footer">
-    <p>© 2026 SecureTrust Admin Portal • Privileged Information Access</p>
+    <p>© 2026 SecureTrust Governance Framework • Data Audit Suite</p>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
 </body>
 
 </html>

@@ -21,15 +21,17 @@ admin_data = {
 
         'fullname': 'Vasudharini',
 
-        'password': 'superadmin',
+        'password': 'superadmin@ST',
 
-        'email': 'superadmin@bank.com',
+        'email': 'superadmin@securetrust.com',
 
         'role': 'super_admin',
 
         'role_display': 'Supreme Administrator',
 
-        'status': 'active'
+        'status': 'active',
+
+        'last_login': 'N/A'
 
     }
 
@@ -70,6 +72,9 @@ def adminlogin():
                 session['role'] = admin.get('role')
                 session['admin_name'] = admin.get('fullname')
                 session['role_display'] = admin.get('role_display', admin.get('role').replace('_', ' '))
+
+                # Update Last Login
+                admin_data[uname]['last_login'] = datetime.now().strftime('%Y-%m-%d %H:%M')
 
                 return redirect(url_for('sadmin_dashboard'))
 
@@ -126,13 +131,31 @@ def sadmin_profile():
     if 'admin' not in session:
         return redirect(url_for('adminlogin'))
 
+    current_admin = admin_data[session['admin']]
+    role = current_admin.get('role')
+
+    # Department Logic
+    if role == 'super_admin':
+        dept = 'SecureTrust Administrative Superior'
+    elif role in ['customer_onboarding_admin', 'account_closure_admin', 'customer_support_admin']:
+        dept = 'Support & Relations Department'
+    elif role in ['card_manager', 'loan_manager', 'fd_manager', 'transaction_manager']:
+        dept = 'Banking Operations Department'
+    elif role == 'auditor':
+        dept = 'Compliance & Audit Department'
+    else:
+        dept = 'General Administration'
+
     return render_template(
         'super_admin/sadmin_profile.html',
         admin=session['admin'],
-        admin_name=session['admin_name'],
-        role=session['role'],
-        email=admin_data[session['admin']]['email'],
-        last_login='Today, 10:30 PM'
+        fullname=current_admin.get('fullname'),
+        role=role,
+        role_display=current_admin.get('role_display', role.replace('_', ' ').title()),
+        email=current_admin.get('email'),
+        status=current_admin.get('status', 'active').title(),
+        last_login=current_admin.get('last_login', 'N/A'),
+        department=dept
     )
 
 @app.route('/admin/add-admin', methods=['GET', 'POST'])
@@ -163,17 +186,25 @@ def admin_addadmin():
                 'password': password,
                 'email': email,
                 'role': role,
-                'status': 'active'
+                'status': 'active',
+                'last_login': 'N/A'
             }
             flash(f'Administrator {uname} created successfully!')
             return redirect(url_for('admin_viewadmins'))
 
         flash('Admin username already exists!')
 
+    # Count admins per role for auto-generation
+    role_counts = {}
+    for admin in admin_data.values():
+        r = admin.get('role')
+        role_counts[r] = role_counts.get(r, 0) + 1
+
     return render_template(
         'super_admin/sadmin_addadmin.html',
         admin=session['admin'],
-        role=session['role']
+        role=session['role'],
+        role_counts=role_counts
     )
 
 
@@ -189,19 +220,83 @@ def admin_viewadmins():
 
     admins_list = []
     for uname, details in admin_data.items():
+        role = details.get('role', 'admin')
+        
+        # Skip Super Admin in the directory
+        if role == 'super_admin':
+            continue
+
+        # Determine Department
+        if role in ['customer_onboarding_admin', 'account_closure_admin', 'customer_support_admin']:
+            dept = 'Support & Relations'
+        elif role in ['card_manager', 'loan_manager', 'fd_manager', 'transaction_manager']:
+            dept = 'Banking Operations'
+        elif role == 'auditor':
+            dept = 'Compliance & Audit'
+        else:
+            dept = 'General Staff'
+
         admins_list.append({
             'username': uname,
             'fullname': details.get('fullname', 'N/A'),
             'email': details.get('email', 'N/A'),
-            'role': details.get('role', 'admin'),
-            'status': details.get('status', 'active')
+            'role': role,
+            'status': details.get('status', 'active'),
+            'last_login': details.get('last_login', 'N/A'),
+            'department': dept
         })
+
+    # Calculate Department-wise counts
+    dept_counts = {}
+    for admin in admins_list:
+        d = admin.get('department')
+        dept_counts[d] = dept_counts.get(d, 0) + 1
 
     return render_template(
         'super_admin/sadmin_viewalladmins.html',
         admin=session['admin'],
         role=session['role'],
-        admins_list=admins_list
+        admins_list=admins_list,
+        total_admins=len(admins_list),
+        dept_counts=dept_counts
+    )
+
+
+@app.route('/admin/view-admin/<username>')
+def admin_view_specific_admin(username):
+
+    if 'admin' not in session:
+        return redirect(url_for('adminlogin'))
+
+    if username not in admin_data:
+        flash("Administrator not found.")
+        return redirect(url_for('admin_viewadmins'))
+
+    details = admin_data[username]
+    role = details.get('role', 'admin')
+
+    # Department Logic
+    if role == 'super_admin':
+        dept = 'SecureTrust Administrative Superior'
+    elif role in ['customer_onboarding_admin', 'account_closure_admin', 'customer_support_admin']:
+        dept = 'Support & Relations Department'
+    elif role in ['card_manager', 'loan_manager', 'fd_manager', 'transaction_manager']:
+        dept = 'Banking Operations Department'
+    elif role == 'auditor':
+        dept = 'Compliance & Audit Department'
+    else:
+        dept = 'General Administration'
+
+    return render_template(
+        'super_admin/sadmin_viewadmin.html',
+        admin=session['admin'],
+        target_admin_uname=username,
+        fullname=details.get('fullname', 'N/A'),
+        role_display=details.get('role_display', role.replace('_', ' ').title()),
+        email=details.get('email', 'N/A'),
+        status=details.get('status', 'active').title(),
+        last_login=details.get('last_login', 'N/A'),
+        department=dept
     )
 
 
@@ -257,16 +352,47 @@ def admin_view_users():
         return redirect(url_for('sadmin_dashboard'))
 
     return render_template('onboarding/admin_viewallusers.html', admin=session['admin'], role=session.get('role'), users=[
-        {'username': uname, 'fullname': details['name'], 'account_number': details['account_number']}
+        {
+            'username': uname, 
+            'fullname': details.get('name', 'N/A'), 
+            'account_number': details.get('account_number', 'N/A'),
+            'status': details.get('status', 'active')
+        }
         for uname, details in data.items()
     ])
 
 
-@app.route('/admin/user/<username>/info')
+@app.route('/admin/user/<username>/info', methods=['GET', 'POST'])
 def admin_user_info(username):
     if 'admin' not in session:
         return redirect(url_for('adminlogin'))
-    return render_template('onboarding/admin_viewuserinfo.html', user=data[username], ausername=username)
+
+    if request.method == 'POST':
+        # Update logic
+        data[username].update({
+            'name': request.form.get('name'),
+            'dob': request.form.get('dob'),
+            'mobile_number': request.form.get('mobileno'),
+            'email_id': request.form.get('emailid'),
+            'city': request.form.get('city'),
+            'state': request.form.get('state'),
+            'account_number': request.form.get('accno'),
+            'card_number': request.form.get('cardno'),
+            'pin_no': request.form.get('pin'),
+            'amount': int(request.form.get('amount')),
+            'aadharno': request.form.get('aadharno'),
+            'panno': request.form.get('panno')
+        })
+        flash(f"Records for {username} updated successfully.")
+        return redirect(url_for('admin_view_users'))
+
+    return render_template(
+        'onboarding/admin_viewuserinfo.html', 
+        user=data[username], 
+        ausername=username,
+        admin=session['admin'],
+        role=session.get('role')
+    )
 
 
 @app.route('/admin/user/<username>/transactions')
@@ -294,6 +420,11 @@ def admin_add_user():
         accno = request.form.get('accno')
         mobile = request.form.get('mobileno')
         email = request.form.get('emailid')
+        dob = request.form.get('dob')
+        aadharno = request.form.get('aadharno')
+        panno = request.form.get('panno')
+        city = request.form.get('city')
+        state = request.form.get('state')
         initial_deposit = int(request.form.get('initial_deposit', 500))
         username = name.lower().replace(" ", "")
         
@@ -301,12 +432,18 @@ def admin_add_user():
             data[username] = {
                 'name': name,
                 'account_number': accno,
+                'dob': dob,
+                'aadharno': aadharno,
+                'panno': panno,
+                'city': city,
+                'state': state,
                 'password': 'password123',
                 'card_number': 'ST' + accno[-4:], 
                 'pin_no': '1234',
                 'mobile_number': mobile,
                 'email_id': email,
                 'amount': initial_deposit,
+                'last_login': 'N/A',
                 'transactions': [{
                     'type': 'Initial Deposit',
                     'amount': initial_deposit,
@@ -319,7 +456,8 @@ def admin_add_user():
         else:
             flash('User already exists.')
             
-    return render_template('onboarding/admin_adduser.html', admin=session['admin'], role=session.get('role'))
+    existing_accnos = [u.get('account_number') for u in data.values()]
+    return render_template('onboarding/admin_adduser.html', admin=session['admin'], role=session.get('role'), existing_accnos=existing_accnos)
 
 
 @app.route('/admin/profile/<admin>')
@@ -401,6 +539,7 @@ def register():
                 'mobile_number': mobile,
                 'email_id': email,
                 'amount': 500,
+                'last_login': 'N/A',
                 'transactions': []
             }
             flash('Registration successful! Please login.')
@@ -424,6 +563,8 @@ def login():
             flash('Invalid password. Please try again.')
             return redirect(url_for('login'))
         session['user'] = username
+        # Update Last Login
+        data[username]['last_login'] = datetime.now().strftime('%Y-%m-%d %H:%M')
         flash('Login successful!')
         return redirect(url_for('dashboard', pusername=username))
 
@@ -443,7 +584,8 @@ def dashboard(pusername):
 
     return render_template('dashboard.html',
                            ausername=pusername,
-                           wbalanceamount=int(data[pusername]['amount']))
+                           wbalanceamount=int(data[pusername]['amount']),
+                           last_login=data[pusername].get('last_login', 'N/A'))
 
 
 @app.route('/balance/<busername>')

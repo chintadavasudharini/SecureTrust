@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Profile | SecureTrust</title>
+    <title>Administrator Detail | SecureTrust</title>
 
     <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -14,21 +14,21 @@
 
     <style>
         :root {
-      --super-admin: #111827;
-      --admin-blue: #2563EB;
-      --audit-cyan: #06B6D4;
-      --customer-green: #16A34A;
-      --directory-blue: #0D6EFD;
-      --support-sky: #0EA5E9;
-      --danger-red: #DC2626;
-      --audit-gold: #F59E0B;
-      --monitor-orange: #F97316;
-      --card-purple: #7C3AED;
-      --loan-emerald: #10B981;
-      --fd-gold: #EAB308;
-    }
+            --super-admin: #111827;
+            --admin-blue: #2563EB;
+            --audit-cyan: #06B6D4;
+            --customer-green: #16A34A;
+            --directory-blue: #0D6EFD;
+            --support-sky: #0EA5E9;
+            --danger-red: #DC2626;
+            --audit-gold: #F59E0B;
+            --monitor-orange: #F97316;
+            --card-purple: #7C3AED;
+            --loan-emerald: #10B981;
+            --fd-gold: #EAB308;
+        }
 
-    body {
+        body {
             background: linear-gradient(to right, #eef4ff, #f8fbff);
             font-family: 'Segoe UI', sans-serif;
             min-height: 100vh;
@@ -47,12 +47,12 @@
         }
 
         .profile-header {
-            background: linear-gradient(135deg, #0d6efd, #0056d2);
+            background: linear-gradient(135deg, #1e293b, #0f172a);
             color: white;
             border-radius: 0 0 40px 40px;
             padding: 50px 0 80px;
             margin-bottom: 40px;
-            box-shadow: 0 12px 30px rgba(13, 110, 253, 0.25);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
         }
 
         .profile-card {
@@ -67,58 +67,13 @@
             width: 120px;
             height: 120px;
             border-radius: 50%;
-            background: rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.1);
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 55px;
             margin: auto;
-            border: 5px solid rgba(255, 255, 255, 0.3);
-        }
-
-        .info-card {
-            background: #ffffff;
-            border-radius: 20px;
-            padding: 25px;
-            height: 100%;
-            border: 1px solid #edf2ff;
-            transition: 0.3s ease;
-        }
-
-        .info-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
-        }
-
-        .info-icon {
-            width: 60px;
-            height: 60px;
-            border-radius: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 28px;
-            margin-bottom: 18px;
-        }
-
-        .bg-soft-primary {
-            background: #e7f1ff;
-            color: #0d6efd;
-        }
-
-        .bg-soft-success {
-            background: #e6fcf5;
-            color: #12b886;
-        }
-
-        .bg-soft-danger {
-            background: #fff5f5;
-            color: #fa5252;
-        }
-
-        .bg-soft-warning {
-            background: #fff9db;
-            color: #f59f00;
+            border: 5px solid rgba(255, 255, 255, 0.2);
         }
 
         .profile-table td {
@@ -136,17 +91,12 @@
         }
 
         .badge-role {
-            background: #0d6efd;
+            background: rgba(255, 255, 255, 0.15);
             padding: 8px 18px;
             border-radius: 30px;
             font-size: 14px;
             font-weight: 600;
-        }
-
-        .action-btn {
-            border-radius: 12px;
-            padding: 12px;
-            font-weight: 600;
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         .footer {
@@ -155,6 +105,13 @@
             color: #6c757d;
             font-size: 14px;
         }
+
+        .action-btn {
+            border-radius: 12px;
+            padding: 12px 25px;
+            font-weight: 600;
+            transition: 0.3s;
+        }
     </style>
 </head>
 
@@ -162,132 +119,72 @@
 
     <nav class="navbar navbar-expand-lg">
         <div class="container-fluid px-4">
-
             <a class="navbar-brand" href="{{ url_for('sadmin_dashboard') }}">
                 <i class="bi bi-bank"></i>
                 SecureTrust Admin
             </a>
-
-            <div class="ms-auto d-flex align-items-center gap-3">
-                <a class="nav-link text-primary fw-bold text-decoration-none" href="{{ url_for('sadmin_dashboard') }}">
-                    <i class="bi bi-grid-fill me-1"></i>
-                    Dashboard
+            <div class="ms-auto">
+                <a class="btn btn-outline-primary fw-bold rounded-pill px-4" href="{{ url_for('admin_viewadmins') }}">
+                    <i class="bi bi-arrow-left me-2"></i>Back to Directory
                 </a>
-
-                <!-- Profile Dropdown -->
-                <div class="dropdown">
-                    <button class="btn btn-outline-primary dropdown-toggle profile-btn" type="button"
-                        data-bs-toggle="dropdown">
-                        <i class="bi bi-person-circle me-1"></i>
-                        {{ admin }}
-                    </button>
-                    <ul class="dropdown-menu dropdown-menu-end shadow border-0">
-                        <li class="px-3 py-2">
-                            <div class="fw-bold">{{ admin }}</div>
-                            <small class="text-muted">
-                                {{ role_display }}
-                            </small>
-                        </li>
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="{{ url_for('sadmin_profile') }}">
-                                <i class="bi bi-person-badge me-2"></i>View Profile
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="{{ url_for('sadmin_dashboard') }}">
-                                <i class="bi bi-speedometer2 me-2"></i>Dashboard
-                            </a>
-                        </li>
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
-                        <li>
-                            <a class="dropdown-item text-danger" href="{{ url_for('logout') }}">
-                                <i class="bi bi-box-arrow-right me-2"></i>Logout
-                            </a>
-                        </li>
-                    </ul>
-                </div>
             </div>
-
         </div>
     </nav>
 
-    <!-- ================= PROFILE HEADER ================= -->
+    <!-- ================= HEADER SECTION ================= -->
 
     <div class="profile-header text-center">
-
         <div class="container">
-
             <div class="profile-avatar mb-4">
-                <i class="bi bi-person-fill"></i>
+                <i class="bi bi-person-badge-fill"></i>
             </div>
-
             <h1 class="fw-bold mb-2">{{ fullname }}</h1>
-
-            <span class="badge-role text-white">
+            <span class="badge-role">
                 {{ role_display }}
             </span>
-
             <p class="mt-3 opacity-75 mb-0">
-                SecureTrust Banking System - Administrative Command Authority
+                Authorized System Administrator Profile
             </p>
-
         </div>
-
     </div>
 
-    <!-- ================= PROFILE CONTENT ================= -->
+    <!-- ================= CONTENT SECTION ================= -->
 
     <div class="container mb-5">
-
         <div class="profile-card">
-
-            <div class="row g-4">
-
-                <!-- COMPACT CENTERED INFO SECTION -->
-                <div class="col-lg-6 mx-auto text-center">
-
-                    <h3 class="fw-bold mb-4">
-                        <i class="bi bi-person-vcard-fill text-primary me-2"></i>
+            <div class="row">
+                <div class="col-lg-7 mx-auto">
+                    <h3 class="fw-bold mb-4 text-center">
+                        <i class="bi bi-shield-lock-fill text-primary me-2"></i>
                         Administrator Information
                     </h3>
 
-                    <table class="table profile-table align-middle mx-auto text-start" style="max-width: 600px;">
-
+                    <table class="table profile-table align-middle mx-auto" style="max-width: 600px;">
                         <tr>
                             <td style="width: 220px;">Full Name</td>
                             <td style="width: 20px;">:</td>
                             <td class="fw-bold text-dark">{{ fullname }}</td>
                         </tr>
-
                         <tr>
                             <td>Username</td>
                             <td>:</td>
-                            <td class="text-primary fw-bold">@{{ admin }}</td>
+                            <td class="text-primary fw-bold">@{{ target_admin_uname }}</td>
                         </tr>
-
                         <tr>
                             <td>Email Address</td>
                             <td>:</td>
                             <td><a href="mailto:{{ email }}" class="text-decoration-none">{{ email }}</a></td>
                         </tr>
-
                         <tr>
                             <td>Administrative Role</td>
                             <td>:</td>
                             <td><span class="badge bg-primary px-3 py-2">{{ role_display }}</span></td>
                         </tr>
-
                         <tr>
                             <td>Department</td>
                             <td>:</td>
                             <td class="text-secondary">{{ department }}</td>
                         </tr>
-
                         <tr>
                             <td>Account Status</td>
                             <td>:</td>
@@ -297,29 +194,38 @@
                                 </span>
                             </td>
                         </tr>
-
                         <tr>
                             <td>Last Login</td>
                             <td>:</td>
                             <td class="text-muted">{{ last_login }}</td>
                         </tr>
-
                     </table>
 
-
+                    <!-- Actions Area -->
+                    <div class="mt-5 pt-4 border-top text-center">
+                        <h5 class="fw-bold mb-3 text-secondary">Administrative Actions</h5>
+                        <div class="d-flex justify-content-center gap-3">
+                            <a href="#" class="btn btn-outline-primary action-btn">
+                                <i class="bi bi-pencil-square me-2"></i>Edit Admin
+                            </a>
+                            <a href="#" class="btn btn-outline-warning action-btn">
+                                <i class="bi bi-slash-circle me-2"></i>Suspend Account
+                            </a>
+                            <a href="{{ url_for('delete_admin', username=target_admin_uname) }}" class="btn btn-outline-danger action-btn" onclick="return confirm('Are you sure you want to delete this administrator?')">
+                                <i class="bi bi-trash3-fill me-2"></i>Revoke Access
+                            </a>
+                        </div>
+                    </div>
 
                 </div>
-
             </div>
-
         </div>
-
     </div>
 
     <!-- ================= FOOTER ================= -->
 
     <div class="footer">
-        © 2026 SecureTrust Banking Administrative Suite • Protected System
+        © 2026 SecureTrust Governance Framework • Privileged Data Access
     </div>
 
     <!-- Bootstrap JS -->
